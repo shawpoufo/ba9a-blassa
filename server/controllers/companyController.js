@@ -28,12 +28,11 @@ exports.render = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-
-        const companies = await Company.update({ name: req.body.name },
+        const name = req.body.name
+        const [companiesCount] = await Company.update({ name },
             { where: { id: req.params.id } })
-
-        if (companies == 0)
-            res.status(404).json({ errorMessage: { errors: { message: "compagnie introuvable" } } })
+        if (companiesCount === 0)
+            return res.status(404).json({ errorMessage: { errors: { message: "compagnie introuvable" } } })
         const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
         res.status(202).json({ successMessage: { msg: "compagnie modifier avec succès", URL: fullUrl } })
 

@@ -1,4 +1,4 @@
-const Station = require('../models/station')
+const { Station } = require('../models/index')
 
 
 exports.create = async (req, res) => {
@@ -55,5 +55,24 @@ exports.remove = async (req, res) => {
 
     } catch (error) {
         // erreur si un trip utilise cette station
+    }
+}
+
+exports.update = async (req, res) => {
+
+    try {
+        const id = req.params.id
+        if (id == null) res.status(400).json({ errorMessage: { errors: { message: "veuiller indique l\'id de la station a supprimer" } } })
+        const { name, city } = req.body
+        const [affectedRowsCount] = Station.update({ name, city }, { where: { id } })
+        if (affectedRowsCount === 0)
+            return res.status(404).json({ errorMessage: { msg: "station introuvable" } })
+        const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+        res.status(202).json({ successMessage: { msg: "station modifier avec succès", URL: fullUrl } })
+    } catch (error) {
+        if (error.name === "SequelizeValidationError")
+            res.status(400).json({ error })
+        else
+            res.status(500).json({ errorMessage: { errors: { message: "une erreur s'est produite contacter l'admin" } } })
     }
 }
