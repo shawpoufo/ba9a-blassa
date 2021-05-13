@@ -1,56 +1,32 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('trip', {
+    await queryInterface.createTable('stopOver', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      startDate: {
+      stopDate: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      endDate: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      startStation: {
+      station: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "station",
-          key: "id"
+          key: 'id'
         }
       },
-      endStation: {
+      trip: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {
-          model: "station",
+        preferences: {
+          model: "trip",
           key: "id"
         }
-      },
-      CompanyId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: "company",
-          key: "id"
-        }
-      },
-      price: {
-        allowNull: false,
-        type: Sequelize.DECIMAL
-      },
-      seatCount: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      state: {
-        allowNull: false,
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -63,6 +39,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('trip');
+    await queryInterface.dropTable('stopOver');
   }
 };

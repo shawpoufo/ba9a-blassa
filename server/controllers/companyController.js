@@ -1,4 +1,4 @@
-const { Company } = require('../models/index')
+const { Company, Trip } = require('../models/index')
 
 exports.create = async (req, res) => {
     try {
@@ -50,9 +50,11 @@ exports.update = async (req, res) => {
 
 exports.render_one = async (req, res) => {
     try {
-        const company = await Company.findOne({ where: { id: req.params.id } })
+        const { id } = req.params
+        const options = req.originalUrl.includes('trip') ? { include: Trip } : {}
+        const company = await Company.findByPk(id, options)
         if (company == null)
-            res.status(404).json({ errorMessage: { errors: { message: "compagnie introuvable" } } })
+            return res.status(404).json({ errorMessage: { errors: { message: "compagnie introuvable" } } })
         res.json({ successMessage: { company: company } })
     } catch (error) {
         res.status(500).json({ errorMessage: { errors: { message: "une erreur s'est produite contacter l'admin" } } })

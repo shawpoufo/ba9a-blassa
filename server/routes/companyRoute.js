@@ -5,4 +5,5 @@ router.post('/company', companyController.create)
 router.get('/company', companyController.render)
 router.put('/company/:id', companyController.update)
 router.get('/company/:id', companyController.render_one)
+router.get('/company/:id/trip', companyController.render_one)
 module.exports = router
