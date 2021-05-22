@@ -9,12 +9,7 @@ exports.create = async (req, res) => {
         res.status(201).json({ successMessage: { msg: "station crée avec succès", station: station } })
 
     } catch (error) {
-        if (error.name === "SequelizeValidationError")
-            res.status(400).json({ error })
-        else if (error.name === "SequelizeUniqueConstraintError")
-            res.status(400).json({ error })
-        else
-            res.status(500).json({ errorMessage: { errors: { message: "une erreur s'est produite contacter l'admin" } } })
+        res.status(500).json({ errorMessage: { errors: { message: "une erreur s'est produite contacter l'admin" } } })
     }
 }
 
@@ -28,17 +23,10 @@ exports.render = async (req, res) => {
 
 exports.render_by_id = async (req, res) => {
     try {
-        const id = parse.int(req.params.id)
-        console.log(id)
-        if (isNan(id)) res.status(400).json({ errorMessage: { errors: { msg: 'mauvaise requete' } } })
         const station = await Station.findOne({ where: { id: req.params.id } })
         res.json({ successMessage: { msg: '', station: station } })
     } catch (error) {
-        if (error.name === "SequelizeValidationError")
-            res.status(400).json({ error })
-        else
-            // res.status(500).json({ errorMessage: { errors: { message: "une erreur s'est produite contacter l'admin" } } })
-            res.status(500).json(error)
+        res.status(500).json(error)
     }
 }
 exports.remove = async (req, res) => {
@@ -46,7 +34,6 @@ exports.remove = async (req, res) => {
         let message = ""
         const id = req.params.id
         const affectedRowsCount = await Station.destroy({ where: { id } })
-        message = affectedRowsCount === 0 ? "cette station n'existe pas!" : 'station supprimer avec succès'
         res.status(202).json({ response: { message: message } })
 
     } catch (error) {
@@ -56,22 +43,13 @@ exports.remove = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-
     try {
         const id = req.params.id
-        if (id == null) res.status(400).json({ errorMessage: { errors: { message: "veuiller indique l\'id de la station a supprimer" } } })
         const { name, city } = req.body
         const [affectedRowsCount] = await Station.update({ name, city }, { where: { id } })
-        if (affectedRowsCount === 0)
-            return res.status(404).json({ errorMessage: { msg: "station introuvable" } })
         const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
         res.status(202).json({ successMessage: { msg: "station modifier avec succès", URL: fullUrl } })
     } catch (error) {
-        if (error.name === "SequelizeValidationError")
-            res.status(400).json({ error })
-        else if (error.name === "SequelizeUniqueConstraintError")
-            res.status(400).json({ response: { message: `le nom ${req.body.name} existe déja veuillez le changer` } })
-        else
-            res.status(500).json({ errorMessage: { errors: { message: "une erreur s'est produite contacter l'admin" } } })
+        res.status(500).json({ errorMessage: { errors: { message: "une erreur s'est produite contacter l'admin" } } })
     }
 }

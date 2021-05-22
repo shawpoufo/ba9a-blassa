@@ -20,6 +20,13 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: { msg: "nom de la compagnie est obligatoire" },
         notNull: { msg: 'nom de la compagnie est obligatoire' },
+        isUnique: function uniqueName(value, next) {
+          company.count({ where: { name: value } }).then(count => {
+            if (count === 0)
+              next()
+            next('ce nom de compagnie est déja utilisé')
+          }).catch(error => next('contacter l\'admin'))
+        }
       }
     }
   }, {

@@ -4,7 +4,6 @@ const { Op } = require('sequelize')
 exports.create = async (req, res) => {
     try {
         const { startDate, endDate, startStation, endStation, CompanyId, price, seatCount } = req.body
-        // const { saveCompany, saveStartStation, saveEndStation, cityStart, cityEnd } = req.body
         if (endStation === startStation)
             return res.status(400).json({ response: { status: "failed", data: { message: "la station d'arrivée doit être différente de la station de départ" } } })
         const trip = await Trip.create({ startDate, endDate, startStation: startStation, endStation, CompanyId, price, seatCount, state: "disponible" })
