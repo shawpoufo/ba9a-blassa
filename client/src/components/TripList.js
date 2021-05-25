@@ -3,19 +3,17 @@ import useTripStore from '../stores/TripStore'
 import shallow from 'zustand/shallow'
 
 const TripList = () => {
-  const [trips, errorMessage] = useTripStore(
-    (state) => [
-      state.fetchTrips,
-      state.trips,
-      state.errorMessage,
-      state.clearTrips,
-    ],
+  const [trips, errorMessage, count] = useTripStore(
+    (state) => [state.trips, state.errorMessage, state.count],
     shallow
   )
 
   return !errorMessage ? (
     <div>
-      <h2>number of trips : {trips.length}</h2>
+      <h2>nombre de voyages trouvée : {count}</h2>
+      <h3>
+        {trips.length} voyages sur {count} affiché
+      </h3>
       {trips.map((trip) => {
         return (
           <ul key={trip.id}>

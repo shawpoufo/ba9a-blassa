@@ -7,6 +7,7 @@ const {
   sequelize,
 } = require('../models/index')
 const { Op } = require('sequelize')
+const { resToSend, res500Error } = require('../Helper/resToSend')
 
 exports.create = async (req, res) => {
   try {
@@ -73,19 +74,22 @@ exports.render = async (req, res) => {
     higherPrice,
     offset,
     state,
+    browse,
   } = req.query
-  // we can't proccess without startCity & endCity  query vérification
 
   const date = new Date()
   const today = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-
   startDate = !startDate ? today : formateDate(startDate)
   endDate = !endDate ? today : formateDate(endDate)
 
   lowerPrice = lowerPrice ? lowerPrice : 0
   higherPrice = higherPrice ? higherPrice : 1000
-  const limit = 10
-  offset = offset ? parseInt(offset) + limit : 0
+  const limit = 5
+  if (browse && (offset || parseInt(offset) === 0))
+    offset =
+      browse === 'next' ? parseInt(offset) + limit : parseInt(offset) - limit
+  else offset = 0
+
   Trip.findAndCountAll({
     where: {
       where: sequelize.where(
@@ -129,7 +133,7 @@ exports.render = async (req, res) => {
       {
         model: Company,
         where: {
-          name: companies ? { [Op.in]: companies } : { [Op.notIn]: [] },
+          id: companies ? { [Op.in]: [companies] } : { [Op.notIn]: [] },
         },
       },
       {

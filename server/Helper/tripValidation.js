@@ -1,5 +1,6 @@
 const validator = require('v2')
 const { Trip } = require('../models/index')
+const { resToSend } = require('./resToSend')
 const validateTripParams = (req, res, next) => {
   const {
     startCity,
@@ -65,10 +66,7 @@ const validateTripParams = (req, res, next) => {
     check.message = 'state format incorrecte'
   }
   if (check.value) next()
-  else
-    return res
-      .status(400)
-      .json({ response: { status: 'failed', data: { payload: check } } })
+  else return res.status(400).json(resToSend('failed', check))
 }
 const validateTrip = (req, res, next) => {
   const {
@@ -88,15 +86,12 @@ const validateTrip = (req, res, next) => {
     CompanyId,
     price,
     seatCount,
+    state: 'disponible',
   })
   trip
     .validate()
     .then((t) => next())
-    .catch((error) =>
-      res
-        .status(400)
-        .json({ response: { status: 'failed', data: { payload: error } } })
-    )
+    .catch((error) => res.status(400).json(resToSend('failed', error)))
 }
 module.exports = {
   validateTripParams,

@@ -1,6 +1,6 @@
 const { Station } = require('../models/index')
 const { Op } = require('sequelize')
-
+const { resToSend, res500Error } = require('../Helper/resToSend')
 exports.create = async (req, res) => {
   try {
     const { name, city } = req.body
@@ -59,6 +59,6 @@ exports.stationByCity = async (req, res) => {
     const stationsByCity = await Station.getStationsByCity()
     res.json(resToSend('succes', stationsByCity))
   } catch {
-    res.json(res500Error())
+    res.status(500).json(res500Error())
   }
 }

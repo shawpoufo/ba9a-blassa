@@ -3,13 +3,25 @@ import axios from 'axios'
 
 const useTripStore = create((set, get) => ({
   trips: [],
+  count: 0,
   errorMessage: '',
   searchQuery: '',
   searchObject: {},
-  setQuery: () => {
+  offset: null,
+  resetOffset: () => set({ offset: null }),
+  resetSearch: () =>
+    set({
+      offset: 0,
+      count: null,
+      errorMessage: '',
+      searchObject: {},
+      searchQuery: '',
+    }),
+  setSearchQuery: () => {
     let params = '?'
     Object.entries(get().searchObject).forEach((prop) => {
-      params = params.concat(`${prop[0]}=${prop[1]}&`)
+      if (prop[1] || prop[1] === 0)
+        params = params.concat(`${prop[0]}=${prop[1]}&`)
     })
     set({ searchQuery: params.slice(0, -1) })
   },
@@ -20,18 +32,26 @@ const useTripStore = create((set, get) => ({
   },
   clearTrips: () => set({ trips: [] }),
   fetchTrips: (params) => {
+    if (!params) params = get().searchQuery
     axios
       .get(`http://localhost:3000/admin/trip${params}`)
       .then((response) => {
-        const { rows } = response.data.payload
-        set((state) => {
-          return { trips: [...state.trips, ...rows] }
+        const { rows, offset, count } = response.data.payload
+        console.log(offset, count)
+        rows.sort((first, second) => first.startDate - second.startDate)
+        set({
+          trips: rows,
+          errorMessage: '',
+          offset: offset,
+          count: count,
         })
-        set({ errorMessage: '' })
       })
       .catch((error) => {
-        const errMessage = error.response.data.response.data.payload.message
-        set({ errorMessage: errMessage ? errMessage : '' })
+        if (error.response.status !== 500) {
+          console.log(error.response.data.payload.message)
+          const errMessage = error.response.data.payload.message
+          set({ errorMessage: errMessage ? errMessage : '' })
+        } else console.log('500')
       })
   },
 }))

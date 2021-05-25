@@ -6,15 +6,24 @@ import TripList from './TripList'
 import TripPagination from './TripPagination'
 import { useLocation } from 'react-router'
 const TripsSerction = () => {
-  const [fetchTrips, clearTrips] = useTripStore(
-    (state) => [state.fetchTrips, state.clearTrips],
+  const [setSearchQuery, clearTrips, resetSearch, fetchTrips] = useTripStore(
+    (state) => [
+      state.setSearchQuery,
+      state.clearTrips,
+      state.resetSearch,
+      state.fetchTrips,
+    ],
     shallow
   )
   const location = useLocation()
   useEffect(() => {
-    fetchTrips(location.search)
-    return () => clearTrips()
-  })
+    setSearchQuery()
+    fetchTrips()
+    return () => {
+      clearTrips()
+      resetSearch()
+    }
+  }, [])
   return (
     <div>
       <TripSearch />

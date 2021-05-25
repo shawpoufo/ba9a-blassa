@@ -13,8 +13,8 @@ const useStationStore = create((set, get) => ({
   fetchStationsByCities: () => {
     axios
       .get('http://localhost:3000/admin/station/city')
-      .then((res) => {
-        const payload = res.data.payload
+      .then((response) => {
+        const payload = response.data.payload
         set({ stationsByCities: payload })
       })
       .catch((error) => console.log('something wrong !', error))

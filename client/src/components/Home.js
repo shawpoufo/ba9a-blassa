@@ -3,26 +3,23 @@ import SelectStation from './SelectStation'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import useStationStore from '../stores/StationStore'
 import shallow from 'zustand/shallow'
+import useTripStore from '../stores/TripStore'
 const Home = () => {
   const history = useHistory()
-  const [fetchStationsByCities, searchObject, addParam, clearSBC] =
-    useStationStore(
-      (state) => [
-        state.fetchStationsByCities,
-        state.searchObject,
-        state.addParam,
-        state.clearSBC,
-      ],
-      shallow
-    )
+  const [fetchStationsByCities, clearSBC] = useStationStore(
+    (state) => [state.fetchStationsByCities, state.clearSBC],
+    shallow
+  )
+  const addParam = useTripStore((state) => state.addParam)
 
   function goToTripLlist() {
-    let params = '?'
-    Object.entries(searchObject).forEach((prop) => {
-      params = params.concat(`${prop[0]}=${prop[1]}&`)
-    })
-    params = params.slice(0, -1)
-    history.push(`/trips${params}`)
+    // let params = []
+    // Object.entries(searchObject).forEach((prop) => {
+    //   if (prop[1]) params.push({prop})
+    //   // if (prop[1]) params = params.concat(`${prop[0]}=${prop[1]}&`)
+    // })
+    // // params = params.slice(0, -1)
+    history.push(`/trips`)
   }
   useEffect(() => {
     fetchStationsByCities()
@@ -32,9 +29,9 @@ const Home = () => {
     <div>
       <h1>Achetez vos tickets d'autocar au meilleur prix!</h1>
       <label>ville / station départ</label>
-      <SelectStation name="startCity" />
+      <SelectStation name="startStation" />
       <label>ville / station d'arrivée</label>
-      <SelectStation name="endCity" />
+      <SelectStation name="endStation" />
       <label>date de départ</label>
       <input
         type="date"
