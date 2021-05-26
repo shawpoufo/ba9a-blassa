@@ -47,8 +47,9 @@ exports.update = async (req, res) => {
       { name, city },
       { where: { id } }
     )
-    const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl
-    res.status(202).json(resToSend('updated', fullUrl))
+    const updatedStation = await Station.findByPk(req.params.id)
+    // const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl
+    res.status(202).json(resToSend('updated', updatedStation))
   } catch (error) {
     res.status(500).json(res500Error())
   }

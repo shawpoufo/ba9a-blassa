@@ -66,7 +66,7 @@ const validateTripParams = (req, res, next) => {
     check.message = 'state format incorrecte'
   }
   if (check.value) next()
-  else return res.status(400).json(resToSend('failed', check))
+  else return res.status(400).json(resToSend('failed', check.message))
 }
 const validateTrip = (req, res, next) => {
   const {
@@ -91,7 +91,9 @@ const validateTrip = (req, res, next) => {
   trip
     .validate()
     .then((t) => next())
-    .catch((error) => res.status(400).json(resToSend('failed', error)))
+    .catch((error) =>
+      res.status(400).json(resToSend('failed', error.errors[0].Message))
+    )
 }
 module.exports = {
   validateTripParams,

@@ -19,7 +19,7 @@ router.get(
 router.post('/station', validateStation, stationController.create)
 
 router.delete(
-  '/station/:id',
+  '/station',
   validateId('station id'),
   stationExists,
   validateStation,

@@ -8,6 +8,7 @@ const useTripStore = create((set, get) => ({
   searchQuery: '',
   searchObject: {},
   offset: null,
+  selectedCity: '',
   resetOffset: () => set({ offset: null }),
   resetSearch: () =>
     set({
@@ -48,8 +49,7 @@ const useTripStore = create((set, get) => ({
       })
       .catch((error) => {
         if (error.response.status !== 500) {
-          console.log(error.response.data.payload.message)
-          const errMessage = error.response.data.payload.message
+          const errMessage = error.response.data.payload
           set({ errorMessage: errMessage ? errMessage : '' })
         } else console.log('500')
       })

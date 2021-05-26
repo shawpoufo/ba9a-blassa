@@ -62,8 +62,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notNull: { msg: 'nom station obligatoire' },
-          notEmpty: { msg: 'nom station obligatoire' },
+          notNull: { msg: 'nom de ville obligatoire' },
+          notEmpty: { msg: 'nom de ville obligatoire' },
         },
       },
     },

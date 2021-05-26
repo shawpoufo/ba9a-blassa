@@ -1,26 +1,15 @@
 const { Station } = require('../models/index')
+const { resToSend, res500Error } = require('./resToSend')
 
 const stationExists = (req, res, next) => {
   const { id } = req.params
   Station.count({ where: { id } })
     .then((count) => {
       if (count === 0)
-        return res.status(404).json({
-          response: {
-            status: 'failed',
-            data: { message: 'station introuvable' },
-          },
-        })
+        return res.status(404).json(resToSend('failed', 'station introuvable'))
       next()
     })
-    .catch((error) =>
-      res.status(500).json({
-        response: {
-          status: 'failed',
-          data: { message: "contacter l'admin" },
-        },
-      })
-    )
+    .catch((error) => res.status(500).json(res500Error()))
 }
 
 const validateStation = (req, res, next) => {
@@ -30,10 +19,8 @@ const validateStation = (req, res, next) => {
   station
     .validate()
     .then((succes) => next())
-    .catch((error) =>
-      res
-        .status(400)
-        .json({ response: { status: 'failed', data: { payload: error } } })
-    )
+    .catch((error) => {
+      res.status(400).json(resToSend('failed', error.errors[0].message))
+    })
 }
 module.exports = { validateStation, stationExists }

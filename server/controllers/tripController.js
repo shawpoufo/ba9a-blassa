@@ -171,9 +171,79 @@ exports.remove = async (req, res) => {
   }
 }
 
+exports.addFullTrip = async (req, res) => {
+  const {
+    startDate,
+    endDate,
+    startStationId,
+    endStationId,
+    startStationName,
+    endStationName,
+    companyId,
+    companyName,
+    price,
+    seatCount,
+    startCityName,
+    endCityName,
+    stopOvers,
+  } = req.body
+  // console.info(`STOPOVERS : ${stopOvers}`)
+  try {
+    const result = await sequelize.transaction(async (t) => {
+      const [company, created] = await Company.findOrCreate({
+        where: { id: companyId, name: companyName },
+        default: { name: companyName },
+        transaction: t,
+      })
+      // if (!created) return { check: false }
+      const [startStation, sscreated] = await Station.findOrCreate({
+        where: {
+          id: startStationId,
+          name: startStationName,
+          city: startCityName,
+        },
+        default: { name: startStationName },
+        transaction: t,
+      })
+      // if (!sscreated) return { check: false }
+      const [endStation, escreated] = await Station.findOrCreate({
+        where: { id: endStationId, name: endStationName, city: endCityName },
+        default: { name: endStationName },
+        transaction: t,
+      })
+      // if (!escreated) return { check: false }
+      const newTrip = await company.createTrip(
+        {
+          startDate,
+          endDate,
+          startStation: startStation.id,
+          endStation: endStation.id,
+          price,
+          seatCount,
+          state: 'disponible',
+        },
+        { transaction: t }
+      )
+      await filterInvalideStopOver(stopOvers, newTrip)
+      const newStopOvers = await addTripId(stopOvers, newTrip)
+      await StopOver.bulkCreate(newStopOvers, { transaction: t })
+
+      return newTrip
+    })
+
+    res.status(201).json(resToSend('success', result))
+  } catch (error) {
+    if (error instanceof InvalidStopOverException)
+      return res.status(400).json(resToSend('failed', error.message))
+    console.log(error)
+    res.status(400).json(error.message)
+  }
+}
+
 /*
     private functions
 */
+class InvalidStopOverException extends Error {}
 function generateDate(stringDate) {
   const parts = stringDate.split('-')
   const date = new Date(parts[0], parts[1] - 1, parts[2])
@@ -185,4 +255,26 @@ function formateDate(date) {
     newDate.getMonth() + 1
   }-${newDate.getDate()}`
   return fomatedDate
+}
+const filterInvalideStopOver = async (stopOvers, newTrip) => {
+  const newStopOvers = stopOvers.filter((s, index) => {
+    const d1 = new Date(s.stopDate)
+    return (
+      d1.getTime() >= newTrip.endDate.getTime() ||
+      d1.getTime() <= newTrip.startDate.getTime()
+    )
+  })
+  if (newStopOvers.length > 0)
+    throw new InvalidStopOverException(
+      `${newStopOvers[0].stopDate} est invalide , la date doit situé entre les date du voyage`
+    )
+  return newStopOvers
+}
+
+const addTripId = async (stopOvers, newTrip) => {
+  const newStopOvers = stopOvers.map((s) => {
+    return { ...s, trip: newTrip.id }
+  })
+
+  return newStopOvers
 }
