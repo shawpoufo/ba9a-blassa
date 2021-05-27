@@ -195,7 +195,6 @@ exports.addFullTrip = async (req, res) => {
         default: { name: companyName },
         transaction: t,
       })
-      // if (!created) return { check: false }
       const [startStation, sscreated] = await Station.findOrCreate({
         where: {
           id: startStationId,
@@ -205,13 +204,11 @@ exports.addFullTrip = async (req, res) => {
         default: { name: startStationName },
         transaction: t,
       })
-      // if (!sscreated) return { check: false }
       const [endStation, escreated] = await Station.findOrCreate({
         where: { id: endStationId, name: endStationName, city: endCityName },
         default: { name: endStationName },
         transaction: t,
       })
-      // if (!escreated) return { check: false }
       const newTrip = await company.createTrip(
         {
           startDate,
@@ -225,8 +222,20 @@ exports.addFullTrip = async (req, res) => {
         { transaction: t }
       )
       await filterInvalideStopOver(stopOvers, newTrip)
-      const newStopOvers = await addTripId(stopOvers, newTrip)
-      await StopOver.bulkCreate(newStopOvers, { transaction: t })
+
+      const stopOversOfStations = []
+      for (let stp of stopOvers) {
+        const [st, check] = await Station.findOrCreate({
+          where: { id: stp.id, name: stp.name, city: stp.city },
+          transaction: t,
+        })
+        stopOversOfStations.push({
+          station: st.id,
+          trip: newTrip.id,
+          stopDate: stp.stopDate,
+        })
+      }
+      await StopOver.bulkCreate(stopOversOfStations, { transaction: t })
 
       return newTrip
     })
