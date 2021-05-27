@@ -6,7 +6,7 @@ const NavSection = () => {
     <nav>
       <Link to="/admin">Home</Link>
       <Link to="/admin/company">company</Link>
-      <Link to="/admin/station">station</Link>
+      <Link to="/admin/voyage">voyage</Link>
     </nav>
   )
 }

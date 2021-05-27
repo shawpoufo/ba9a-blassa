@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom'
 import AdminHome from './AdminHome'
 import CompanySection from './companySection/CompanySection'
-import StationSection from './stationSection/StationSection'
+import TripSection from './tripSection/TripSection'
 import NavSection from './NavSection'
 const AdminSection = () => {
   const { section } = useParams()
@@ -19,8 +19,8 @@ const AdminSection = () => {
       case 'company':
         setSectionComponent(<CompanySection />)
         break
-      case 'station':
-        setSectionComponent(<StationSection />)
+      case 'voyage':
+        setSectionComponent(<TripSection />)
         break
       default:
         setSectionComponent(<AdminHome />)
