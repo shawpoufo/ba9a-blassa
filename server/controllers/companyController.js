@@ -14,7 +14,10 @@ exports.create = async (req, res) => {
 
 exports.render = async (req, res) => {
   try {
-    const companies = await Company.findAll()
+    const companies = await Company.findAll({
+      attributes: ['id', 'name'],
+      group: ['id', 'name'],
+    })
     res.status(200).json(resToSend('success', companies))
   } catch (error) {
     res.status(500).json(res500Error())
