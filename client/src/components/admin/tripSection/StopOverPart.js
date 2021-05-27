@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import shallow from 'zustand/shallow'
 import useStationStore from '../../../stores/StationStore'
-
+import { today } from '../../../helper/today'
 //----private function
-const today = () => {
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = today.getMonth() + 1
-  const day = today.getDate()
-  return `${year}-${month < 10 ? `0${month}` : month}-${day}`
-}
 
 //------component
 const StopOverPart = ({
-  stations,
+  stationsByCities,
   selectedStopOvers,
   setSelectedStopOvers,
 }) => {
@@ -21,14 +14,10 @@ const StopOverPart = ({
     id: null,
     name: '',
     city: '',
-    stopDate: '',
+    stopDate: today(),
+    stopTime: '',
   })
-  useEffect(() => {
-    setStopOver((s) => ({
-      ...s,
-      stopDate: today(),
-    }))
-  }, [])
+  const [stations, setStations] = useState([])
 
   useEffect(() => {
     setStopOver((s) => {
@@ -52,8 +41,24 @@ const StopOverPart = ({
     })
   }
   function addStopOver() {
-    setSelectedStopOvers((list) => [...list, stopOver])
+    setSelectedStopOvers((list) => [
+      ...list,
+      { ...stopOver, startDate: `${stopOver.stopDate} ${stopOver.stopTime}` },
+    ])
   }
+  function getStation() {
+    const extractedStations = []
+    for (let res of stationsByCities) {
+      for (let station of res.city.stations) {
+        if (stopOver.city === res.city.name) extractedStations.push(station)
+      }
+    }
+    setStations(extractedStations)
+  }
+  useEffect(() => {
+    getStation()
+  }, [stopOver.city])
+
   return (
     <div>
       <div>
@@ -65,8 +70,8 @@ const StopOverPart = ({
           list="citylist"
         />
         <datalist id="citylist">
-          {stations.map((sta) => (
-            <option key={sta.city} value={sta.city} />
+          {stationsByCities.map((res) => (
+            <option key={res.city.name} value={res.city.name} />
           ))}
         </datalist>
         <label>station :</label>
@@ -78,11 +83,9 @@ const StopOverPart = ({
           disabled={stopOver.city ? false : true}
         />
         <datalist id="stationlist">
-          {stations.map((sta) =>
-            sta.city === stopOver.city ? (
-              <option key={sta.name} value={sta.name} />
-            ) : null
-          )}
+          {stations.map((station) => (
+            <option key={station.name} value={station.name} />
+          ))}
         </datalist>
         <label>Date de l'escale</label>
         <input
@@ -91,6 +94,15 @@ const StopOverPart = ({
           onChange={changeStopOver}
           name="stopDate"
         />
+
+        <label>heure de l'escale</label>
+        <input
+          type="time"
+          value={stopOver.stopTime}
+          onChange={changeStopOver}
+          name="stopTime"
+        />
+
         <button onClick={addStopOver}>Ajouter</button>
       </div>
       <div>

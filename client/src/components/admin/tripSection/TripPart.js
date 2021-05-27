@@ -1,5 +1,13 @@
 import React from 'react'
-const TripPart = ({ startDate, endDate, price, setTripData }) => {
+const TripPart = ({
+  startDate,
+  endDate,
+  price,
+  seatCount,
+  setTripData,
+  startTime,
+  endTime,
+}) => {
   function changeTripDataState(e) {
     setTripData((trip) => {
       return { ...trip, [e.target.name]: e.target.value }
@@ -17,6 +25,15 @@ const TripPart = ({ startDate, endDate, price, setTripData }) => {
         />
       </div>
       <div>
+        <label>Heure de départ : </label>
+        <input
+          type="time"
+          value={startTime}
+          name="startTime"
+          onChange={changeTripDataState}
+        />
+      </div>
+      <div>
         <label>date d'arrivée</label>
         <input
           type="date"
@@ -26,11 +43,29 @@ const TripPart = ({ startDate, endDate, price, setTripData }) => {
         />
       </div>
       <div>
+        <label>Heure d'arrivée : </label>
+        <input
+          type="time"
+          value={endTime}
+          name="endTime"
+          onChange={changeTripDataState}
+        />
+      </div>
+      <div>
         <label>Prix :</label>
         <input
           type="number"
           value={price}
           name="price"
+          onChange={changeTripDataState}
+        />
+      </div>
+      <div>
+        <label>Nombre de place :</label>
+        <input
+          type="number"
+          value={seatCount}
+          name="seatCount"
           onChange={changeTripDataState}
         />
       </div>

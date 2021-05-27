@@ -5,6 +5,7 @@ const useTripStore = create((set, get) => ({
   trips: [],
   count: 0,
   errorMessage: '',
+  successMessage: '',
   searchQuery: '',
   searchObject: {},
   offset: null,
@@ -52,6 +53,48 @@ const useTripStore = create((set, get) => ({
           const errMessage = error.response.data.payload
           set({ errorMessage: errMessage ? errMessage : '' })
         } else console.log('500')
+      })
+  },
+  addFullTrip: (company, tripData, startStation, endStation, stopOvers) => {
+    const reqCompany = { companyId: company.id, companyName: company.name }
+    const reqStartStation = {
+      startStationId: startStation.id,
+      startStationName: startStation.name,
+      startCityName: startStation.city,
+    }
+    const reqEndStation = {
+      endStationId: endStation.id,
+      endStationName: endStation.name,
+      endCityName: endStation.city,
+    }
+    const reqTripData = {
+      ...tripData,
+      startDate: `${tripData.startDate} ${tripData.startTime}`,
+      endDate: `${tripData.endDate} ${tripData.endTime}`,
+    }
+    axios
+      .post('http://localhost:3000/admin/fulltrip', {
+        ...reqCompany,
+        ...reqStartStation,
+        ...reqEndStation,
+        ...reqTripData,
+        stopOvers,
+      })
+      .then((response) => {
+        const fullTrip = response.data.payload
+        set((state) => {
+          return {
+            trips: [...state.trips, fullTrip],
+            errorMessage: '',
+            successMesage: 'voyages ajouter avec succès',
+          }
+        })
+      })
+      .catch((error) => {
+        if (error.response.status !== 500) {
+          const em = error.response.data.payload
+          set({ errorMessage: em, successMesage: '' })
+        }
       })
   },
 }))

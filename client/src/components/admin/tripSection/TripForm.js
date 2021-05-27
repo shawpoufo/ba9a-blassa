@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import shallow from 'zustand/shallow'
+import { today } from '../../../helper/today'
 import useStationStore from '../../../stores/StationStore'
+import useTripStore from '../../../stores/TripStore'
 import CompanyPart from './CompanyPart'
 import StationPart from './StationPart'
 import StopOverPart from './StopOverPart'
 import TripPart from './TripPart'
 
 const TripForm = () => {
-  const [station, fectchStations] = useStationStore(
-    (state) => [state.station, state.fetchStations],
+  const [stationsByCities, fetchStationsByCities] = useStationStore(
+    (state) => [state.stationsByCities, state.fetchStationsByCities],
     shallow
   )
-
+  const [addFullTrip, errorMessage, successMesage] = useTripStore(
+    (state) => [state.addFullTrip, state.errorMessage, state.successMessage],
+    shallow
+  )
   const [company, setCompany] = useState({ id: null, name: '' })
   const [tripData, setTripData] = useState({
-    startDate: '',
-    endDate: '',
+    startDate: today(),
+    endDate: today(),
     price: 0,
+    seatCount: 0,
+    startTime: '',
+    endTime: '',
   })
   const [selectedStopOvers, setSelectedStopOvers] = useState([])
   const [startStation, setStartStation] = useState({
@@ -29,11 +37,16 @@ const TripForm = () => {
     name: '',
     city: '',
   })
-  useEffect(() => console.log({ tripData, company }), [tripData, company])
-  useEffect(() => console.info(selectedStopOvers), [selectedStopOvers])
   useEffect(() => {
-    fectchStations()
+    fetchStationsByCities()
+    // CLEAR if nedeed
   }, [])
+  //---------------Functions
+  function addTrip() {
+    console.info(company, tripData, startStation, endStation, selectedStopOvers)
+    // addFullTrip(company, tripData, startStation, endStation, selectedStopOvers)
+  }
+  //--------------
   return (
     <div>
       <CompanyPart selectedCompany={company} setCompany={setCompany} />
@@ -41,26 +54,30 @@ const TripForm = () => {
         cmpName="startStation"
         station={startStation}
         setStation={setStartStation}
-        stations={station}
+        stationsByCities={stationsByCities}
       />
       <StationPart
         cmpName="endStation"
         station={endStation}
         setStation={setEndStation}
-        stations={station}
+        stationsByCities={stationsByCities}
       />
       <TripPart
         startDate={tripData.startDate}
         endDate={tripData.endDate}
         price={tripData.price}
+        seatCount={tripData.seatCount}
+        startTime={tripData.startTime}
+        endTime={tripData.endTime}
         setTripData={setTripData}
       />
       <StopOverPart
         selectedStopOvers={selectedStopOvers}
         setSelectedStopOvers={setSelectedStopOvers}
-        stations={station}
+        stationsByCities={stationsByCities}
       />
-      <button>Ajouter</button>
+      <button onClick={addTrip}>Ajouter</button>
+      <div> {errorMessage ? errorMessage : successMesage}</div>
     </div>
   )
 }
