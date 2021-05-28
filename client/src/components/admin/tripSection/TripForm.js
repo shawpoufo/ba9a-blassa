@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import shallow from 'zustand/shallow'
-import { today } from '../../../helper/today'
 import useStationStore from '../../../stores/StationStore'
 import useTripStore from '../../../stores/TripStore'
 import CompanyPart from './CompanyPart'

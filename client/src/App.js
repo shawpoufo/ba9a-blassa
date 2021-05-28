@@ -3,11 +3,16 @@ import Home from './components/Home'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import TripsSerction from './components/TripSection'
 import AdminSection from './components/admin/AdminSection'
+import Header from './components/Header'
+import SignUpSection from './components/signUp/signUpSection'
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
+        <Route path="/" component={Header} />
         <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/signup" exact component={SignUpSection} />
           <Route path="/" exact component={Home} />
           <Route path="/trips" exact component={TripsSerction} />
           <Route path="/admin" exact component={AdminSection} />
