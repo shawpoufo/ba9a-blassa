@@ -8,6 +8,7 @@ import StationPart from './StationPart'
 import StopOverPart from './StopOverPart'
 import TripPart from './TripPart'
 import moment from 'moment'
+import useCompanyStore from '../../../stores/CompanyStore'
 
 const TripForm = () => {
   const [stationsByCities, fetchStationsByCities] = useStationStore(
@@ -16,6 +17,10 @@ const TripForm = () => {
   )
   const [addFullTrip, errorMessage, successMessage] = useTripStore(
     (state) => [state.addFullTrip, state.errorMessage, state.successMessage],
+    shallow
+  )
+  const [companies, fetchCompanies] = useCompanyStore(
+    (state) => [state.companies, state.fetchCompanies],
     shallow
   )
   const [company, setCompany] = useState({ id: null, name: '' })
@@ -63,6 +68,7 @@ const TripForm = () => {
   }
   useEffect(() => {
     fetchStationsByCities()
+    fetchCompanies()
   }, [])
   //---------------Functions
   function addTrip() {
@@ -73,12 +79,17 @@ const TripForm = () => {
     if (successMessage) {
       clearState()
       fetchStationsByCities()
+      fetchCompanies()
     }
   }, [successMessage])
   //--------------
   return (
     <div>
-      <CompanyPart selectedCompany={company} setCompany={setCompany} />
+      <CompanyPart
+        companies={companies}
+        selectedCompany={company}
+        setCompany={setCompany}
+      />
       <StationPart
         cmpName="startStation"
         station={startStation}

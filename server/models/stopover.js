@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      stopOver.belongsTo(models.Trip, { foreignKey: 'trip' })
+      stopOver.belongsTo(models.Trip)
       stopOver.belongsTo(models.Station, { foreignKey: 'station' })
     }
   }

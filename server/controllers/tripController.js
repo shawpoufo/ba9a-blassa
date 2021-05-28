@@ -8,6 +8,7 @@ const {
 } = require('../models/index')
 const { Op } = require('sequelize')
 const { resToSend, res500Error } = require('../Helper/resToSend')
+const trip = require('../models/trip')
 
 exports.create = async (req, res) => {
   try {
@@ -51,103 +52,117 @@ exports.create = async (req, res) => {
 }
 
 exports.render = async (req, res) => {
-  /*
-        default date : today
-        date : search by date no time
-        page : 10 per page
-        startCity & endCity
-        Lprice & Hprice
-        companies
-        order by : the earlier & the latest
-        equipement
-        availlable seats
-    */
-  let {
-    startCity,
-    endCity,
-    startStation,
-    endStation,
-    startDate,
-    endDate,
-    companies,
-    lowerPrice,
-    higherPrice,
-    offset,
-    state,
-    browse,
-  } = req.query
+  try {
+    let {
+      startCity,
+      endCity,
+      startStation,
+      endStation,
+      startDate,
+      endDate,
+      companies,
+      lowerPrice,
+      higherPrice,
+      offset,
+      state,
+      browse,
+    } = req.query
 
-  const date = new Date()
-  const today = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-  startDate = !startDate ? today : formateDate(startDate)
-  endDate = !endDate ? today : formateDate(endDate)
+    const date = new Date()
+    const today = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`
+    startDate = !startDate ? today : formateDate(startDate)
+    endDate = !endDate ? today : formateDate(endDate)
 
-  lowerPrice = lowerPrice ? lowerPrice : 0
-  higherPrice = higherPrice ? higherPrice : 1000
-  const limit = 5
-  if (browse && (offset || parseInt(offset) === 0))
-    offset =
-      browse === 'next' ? parseInt(offset) + limit : parseInt(offset) - limit
-  else offset = 0
+    lowerPrice = lowerPrice ? lowerPrice : 0
+    higherPrice = higherPrice ? higherPrice : 1000
+    const limit = 5
+    if (browse && (offset || parseInt(offset) === 0))
+      offset =
+        browse === 'next' ? parseInt(offset) + limit : parseInt(offset) - limit
+    else offset = 0
 
-  Trip.findAndCountAll({
-    where: {
-      where: sequelize.where(
-        sequelize.fn('date', sequelize.col('startDate')),
-        '>=',
-        startDate
-      ),
-      [Op.and]: sequelize.where(
-        sequelize.fn('date', sequelize.col('startDate')),
-        '<=',
-        endDate
-      ),
-      state: state ? state : 'disponible',
-      price: {
-        [Op.between]: [lowerPrice, higherPrice],
-      },
-    },
-    order: [['startDate', 'asc']], //[sequelize.fn('time', sequelize.col('startDate')), "desc"]
-    include: [
-      {
-        model: Station,
-        as: 'Start',
-        where: {
-          city: sequelize.col('station.startStation'),
-          city: startCity,
-          id: startStation ? startStation : { [Op.ne]: -1 },
+    ///=================================
+
+    ///=================================
+
+    const trips = await Trip.findAndCountAll({
+      where: {
+        where: sequelize.where(
+          sequelize.fn('date', sequelize.col('startDate')),
+          '>=',
+          startDate
+        ),
+        [Op.and]: sequelize.where(
+          sequelize.fn('date', sequelize.col('startDate')),
+          '<=',
+          endDate
+        ),
+        state: state ? state : 'disponible',
+        price: {
+          [Op.between]: [lowerPrice, higherPrice],
         },
       },
-      {
-        model: Station,
-        as: 'End',
-        where: {
-          city: sequelize.col('station.endStation'),
-          city: endCity,
-          id: endStation ? endStation : { [Op.ne]: -1 },
+      include: [
+        {
+          model: Station,
+          as: 'Start',
+          where: {
+            city: sequelize.col('station.startStation'),
+            city: startCity,
+            id: startStation ? startStation : { [Op.ne]: -1 },
+          },
         },
-      },
-      {
-        model: StopOver,
-      },
-      {
-        model: Company,
-        where: {
-          id: companies ? { [Op.in]: [companies] } : { [Op.notIn]: [] },
+        {
+          model: Station,
+          as: 'End',
+          where: {
+            city: sequelize.col('station.endStation'),
+            city: endCity,
+            id: endStation ? endStation : { [Op.ne]: -1 },
+          },
         },
-      },
-      {
-        model: Booking,
-        attributes: ['seatNumber'],
-      },
-    ],
-    limit,
-    offset,
-  })
-    .then((trips) => {
-      return res.json(resToSend('success', { ...trips, offset }))
+        // {
+        //   model: StopOver,
+        //   attributes: ['id', 'stopDate', 'station'],
+        // },
+        {
+          model: Company,
+          where: {
+            id: companies ? { [Op.in]: [companies] } : { [Op.notIn]: [] },
+          },
+        },
+        // {
+        //   model: Booking,
+        //   attributes: ['seatNumber'],
+        // },
+      ],
+      order: [['startDate', 'asc']],
+      limit,
+      offset,
     })
-    .catch(() => res.json(res500Error()))
+
+    const newTrips = []
+    for (let t of trips.rows) {
+      const stopOvers = await t.getStopOvers()
+      const bookings = await t.getBookings()
+
+      newTrips.push({
+        ...t.dataValues,
+        StopOvers: stopOvers,
+        Bookings: bookings,
+      })
+    }
+
+    res.json(
+      resToSend('success', { rows: newTrips, offset, count: trips.count })
+    )
+  } catch (error) {
+    console.error(`ERROR : ${error}`)
+    res.status(500).json(error)
+  }
+  // .catch(() => res.json(res500Error()))
 }
 
 exports.remove = async (req, res) => {
@@ -231,7 +246,7 @@ exports.addFullTrip = async (req, res) => {
         })
         stopOversOfStations.push({
           station: st.id,
-          trip: newTrip.id,
+          TripId: newTrip.id,
           stopDate: stp.stopDate,
         })
       }
@@ -286,4 +301,25 @@ const addTripId = async (stopOvers, newTrip) => {
   })
 
   return newStopOvers
+}
+const countOfAll = (startDate, endDate, state, lowerPrice, higherPrice) => {
+  console.log(startDate)
+  return Trip.count({
+    where: {
+      where: sequelize.where(
+        sequelize.fn('date', sequelize.col('startDate')),
+        '>=',
+        startDate
+      ),
+      [Op.and]: sequelize.where(
+        sequelize.fn('date', sequelize.col('startDate')),
+        '<=',
+        endDate
+      ),
+      state: state ? state : 'disponible',
+      price: {
+        [Op.between]: [lowerPrice, higherPrice],
+      },
+    },
+  }).then((res) => res)
 }

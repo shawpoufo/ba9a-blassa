@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('stopOver', {
@@ -6,39 +6,39 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       stopDate: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       station: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "station",
-          key: 'id'
-        }
+          model: 'station',
+          key: 'id',
+        },
       },
-      trip: {
+      TripId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        preferences: {
-          model: "trip",
-          key: "id"
-        }
+        references: {
+          model: 'trip',
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
-    });
+        type: Sequelize.DATE,
+      },
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('stopOver');
-  }
-};
+    await queryInterface.dropTable('stopOver')
+  },
+}
