@@ -4,6 +4,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom'
 import useStationStore from '../stores/StationStore'
 import shallow from 'zustand/shallow'
 import useTripStore from '../stores/TripStore'
+import moment from 'moment-timezone'
 const Home = () => {
   const history = useHistory()
   const [fetchStationsByCities, clearSBC] = useStationStore(
@@ -35,6 +36,7 @@ const Home = () => {
       <label>date de départ</label>
       <input
         type="date"
+        value={moment().format('YYYY-MM-DD')}
         onChange={(e) => addParam({ startDate: e.target.value })}></input>
       <button onClick={() => goToTripLlist()}>Recherche</button>
     </div>

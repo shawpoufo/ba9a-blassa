@@ -7,24 +7,25 @@ import CompanyPart from './CompanyPart'
 import StationPart from './StationPart'
 import StopOverPart from './StopOverPart'
 import TripPart from './TripPart'
+import moment from 'moment'
 
 const TripForm = () => {
   const [stationsByCities, fetchStationsByCities] = useStationStore(
     (state) => [state.stationsByCities, state.fetchStationsByCities],
     shallow
   )
-  const [addFullTrip, errorMessage, successMesage] = useTripStore(
+  const [addFullTrip, errorMessage, successMessage] = useTripStore(
     (state) => [state.addFullTrip, state.errorMessage, state.successMessage],
     shallow
   )
   const [company, setCompany] = useState({ id: null, name: '' })
   const [tripData, setTripData] = useState({
-    startDate: today(),
-    endDate: today(),
+    startDate: moment().format('YYYY-MM-DD'),
+    endDate: moment().format('YYYY-MM-DD'),
     price: 0,
     seatCount: 0,
-    startTime: '',
-    endTime: '',
+    startTime: moment().format('HH:mm'),
+    endTime: moment().format('HH:mm'),
   })
   const [selectedStopOvers, setSelectedStopOvers] = useState([])
   const [startStation, setStartStation] = useState({
@@ -37,15 +38,43 @@ const TripForm = () => {
     name: '',
     city: '',
   })
+
+  function clearState() {
+    setCompany({ id: null, name: '' })
+    setTripData({
+      startDate: moment().format('YYYY-MM-DD'),
+      endDate: moment().format('YYYY-MM-DD'),
+      price: 0,
+      seatCount: 0,
+      startTime: moment().format('HH:mm'),
+      endTime: moment().format('HH:mm'),
+    })
+    setStartStation({
+      id: null,
+      name: '',
+      city: '',
+    })
+    setEndStation({
+      id: null,
+      name: '',
+      city: '',
+    })
+    setSelectedStopOvers([])
+  }
   useEffect(() => {
     fetchStationsByCities()
-    // CLEAR if nedeed
   }, [])
   //---------------Functions
   function addTrip() {
-    console.info(company, tripData, startStation, endStation, selectedStopOvers)
-    // addFullTrip(company, tripData, startStation, endStation, selectedStopOvers)
+    addFullTrip(company, tripData, startStation, endStation, selectedStopOvers)
   }
+  //---if the add tripp succed
+  useEffect(() => {
+    if (successMessage) {
+      clearState()
+      fetchStationsByCities()
+    }
+  }, [successMessage])
   //--------------
   return (
     <div>
@@ -77,7 +106,7 @@ const TripForm = () => {
         stationsByCities={stationsByCities}
       />
       <button onClick={addTrip}>Ajouter</button>
-      <div> {errorMessage ? errorMessage : successMesage}</div>
+      <div> {errorMessage ? errorMessage : successMessage}</div>
     </div>
   )
 }

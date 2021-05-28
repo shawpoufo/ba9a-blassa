@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import shallow from 'zustand/shallow'
 import useStationStore from '../../../stores/StationStore'
-import { today } from '../../../helper/today'
+import moment from 'moment'
 //----private function
 
 //------component
@@ -14,8 +14,8 @@ const StopOverPart = ({
     id: null,
     name: '',
     city: '',
-    stopDate: today(),
-    stopTime: '',
+    stopDate: moment().format('YYYY-MM-DD'),
+    stopTime: moment().format('HH:mm'),
   })
   const [stations, setStations] = useState([])
 
@@ -45,6 +45,13 @@ const StopOverPart = ({
       ...list,
       { ...stopOver, startDate: `${stopOver.stopDate} ${stopOver.stopTime}` },
     ])
+    setStopOver({
+      id: null,
+      name: '',
+      city: '',
+      stopDate: moment().format('YYYY-MM-DD'),
+      stopTime: moment().format('HH:mm'),
+    })
   }
   function getStation() {
     const extractedStations = []

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import useStationStore from '../stores/StationStore'
 import shallow from 'zustand/shallow'
 import { useLocation } from 'react-router'
 import useTripStore from '../stores/TripStore'
 const SelectStation = ({ name }) => {
   const location = useLocation()
-
+  const [selectedValue, setSelectedValue] = useState({ id: -1, city: '' })
   const [stationsByCities] = useStationStore(
     (state) => [state.stationsByCities],
     shallow
@@ -19,6 +19,7 @@ const SelectStation = ({ name }) => {
   return (
     <select
       name={name}
+      value={selectedValue}
       onChange={(e) => {
         const selectedStation = e.target.value
         const sindex = e.target.options.selectedIndex
@@ -38,13 +39,15 @@ const SelectStation = ({ name }) => {
 
         addParam(paramStation)
         addParam({
-          [selectName === 'startStation' ? 'startCity' : 'endCity']:
-            selectedCity,
+          [selectName === 'startStation'
+            ? 'startCity'
+            : 'endCity']: `${selectedCity}`,
         })
 
         setStation(selectedStation)
       }}
       value={station}>
+      <option value="-1"> choisissez une ville ou une station </option>
       {stationsByCities.map((sbc) => {
         return (
           <optgroup key={sbc.city.name} label={sbc.city.name}>

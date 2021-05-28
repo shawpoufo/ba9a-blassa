@@ -1,6 +1,6 @@
 import create from 'zustand'
 import axios from 'axios'
-
+import moment from 'moment'
 const useTripStore = create((set, get) => ({
   trips: [],
   count: 0,
@@ -39,7 +39,6 @@ const useTripStore = create((set, get) => ({
       .get(`http://localhost:3000/admin/trip${params}`)
       .then((response) => {
         const { rows, offset, count } = response.data.payload
-        console.log(offset, count)
         rows.sort((first, second) => first.startDate - second.startDate)
         set({
           trips: rows,
@@ -69,16 +68,23 @@ const useTripStore = create((set, get) => ({
     }
     const reqTripData = {
       ...tripData,
-      startDate: `${tripData.startDate} ${tripData.startTime}`,
-      endDate: `${tripData.endDate} ${tripData.endTime}`,
+      startDate: moment(`${tripData.startDate} ${tripData.startTime}`).add(
+        1,
+        'h'
+      ),
+      endDate: moment(`${tripData.endDate} ${tripData.endTime}`).add(1, 'h'),
     }
+    const modifiedStopOvers = stopOvers.map((stopOver) => ({
+      ...stopOver,
+      stopDate: moment(`${stopOver.stopDate} ${stopOver.stopTime}`).add(1, 'h'),
+    }))
     axios
       .post('http://localhost:3000/admin/fulltrip', {
         ...reqCompany,
         ...reqStartStation,
         ...reqEndStation,
         ...reqTripData,
-        stopOvers,
+        stopOvers: modifiedStopOvers,
       })
       .then((response) => {
         const fullTrip = response.data.payload
@@ -86,14 +92,15 @@ const useTripStore = create((set, get) => ({
           return {
             trips: [...state.trips, fullTrip],
             errorMessage: '',
-            successMesage: 'voyages ajouter avec succès',
+            successMessage: `voyages #${fullTrip.id} a été ajouter avec succès`,
           }
         })
       })
       .catch((error) => {
         if (error.response.status !== 500) {
           const em = error.response.data.payload
-          set({ errorMessage: em, successMesage: '' })
+
+          set({ errorMessage: em, successMessage: '' })
         }
       })
   },

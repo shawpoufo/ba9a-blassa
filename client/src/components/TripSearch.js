@@ -4,6 +4,7 @@ import shallow from 'zustand/shallow'
 import useTripStore from '../stores/TripStore'
 import SelectStation from './SelectStation'
 import useStationStore from '../stores/StationStore'
+import moment from 'moment-timezone'
 
 const TripSearch = () => {
   const [fetchCompanies, companiesF, clearCompanies] = useCompanyStore(
@@ -36,12 +37,14 @@ const TripSearch = () => {
     { startDate, endDate, companies, lowerPrice, higherPrice },
     setSearch,
   ] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: moment().format('YYYY-MM-DD'),
+    endDate: moment().format('YYYY-MM-DD'),
     companies: 0,
     lowerPrice: 0,
     higherPrice: 900,
   })
+
+  useEffect(() => console.log(searchObject))
 
   function regenerateSearchObject(e) {
     let param = {}

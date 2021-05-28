@@ -33,11 +33,11 @@ const validateTripParams = (req, res, next) => {
     check.value = false
     check.message = 'startCity est une chaine de caractére'
   }
-  if (startStation && !validator.isNumeric(`${startStation}`)) {
+  if (startStation && !validator.isAlphanumeric(`${startStation}`)) {
     check.value = false
     check.message = 'startStation format incorrecte'
   }
-  if (endStation && !validator.isNumeric(`${endStation}`)) {
+  if (endStation && !validator.isAlphanumeric(`${endStation}`)) {
     check.value = false
     check.message = 'endStation format incorrecte'
   }

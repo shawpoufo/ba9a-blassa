@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import useCompanyStore from '../../../stores/CompanyStore'
 import shallow from 'zustand/shallow'
 
-const CompanyPart = ({ name, id, setCompany }) => {
+const CompanyPart = ({ selectedCompany, setCompany }) => {
   const [companies, fetchCompanies] = useCompanyStore(
     (state) => [state.companies, state.fetchCompanies],
     shallow
@@ -21,7 +21,12 @@ const CompanyPart = ({ name, id, setCompany }) => {
     <div>
       <div>
         <label>Company </label>
-        <input onInput={changeCompanyState} name="company" list="companies" />
+        <input
+          onInput={changeCompanyState}
+          name="company"
+          list="companies"
+          value={selectedCompany.name}
+        />
         <datalist id="companies">
           {companies.map((company) => {
             return <option key={company.id} value={company.name} />

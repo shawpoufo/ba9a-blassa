@@ -244,8 +244,8 @@ exports.addFullTrip = async (req, res) => {
   } catch (error) {
     if (error instanceof InvalidStopOverException)
       return res.status(400).json(resToSend('failed', error.message))
-    console.log(error)
-    res.status(400).json(error.message)
+
+    res.status(400).json(resToSend('failed', error.errors[0].message))
   }
 }
 
