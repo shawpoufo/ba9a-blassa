@@ -21,7 +21,7 @@ exports.sign_up = async (req, res) => {
       .status(201)
       .json(
         resToSend(
-          'succes',
+          true,
           'vous êtes inscrit avec succès ,vérifier votre boite email pour valider votre compte '
         )
       )

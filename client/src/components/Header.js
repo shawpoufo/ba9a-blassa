@@ -6,7 +6,7 @@ const Header = () => {
     <div>
       <div>
         <Link to="/signup">s'inscrire</Link>
-        <Link to="/signin">se connecter</Link>
+        <Link to="/login">se connecter</Link>
       </div>
     </div>
   )

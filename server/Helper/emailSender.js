@@ -10,14 +10,19 @@ const sendValidationEmail = async (client) => {
       host: 'smtp.ethereal.email',
       port: 587,
       auth: {
-        user: 'leland.wolf90@ethereal.email',
-        pass: 'DQU1cuwBFKdNKEwcs4',
+        user: 'devyn.deckow58@ethereal.email',
+        pass: 'GdzuubUVRM1PHVx3HB',
       },
     })
     // generer le lien de validation
+    console.log(client.dataValues)
+    console.log(process.env.EMAIL_TOKEN)
+
     const key = jwt.sign(client.dataValues, process.env.EMAIL_TOKEN, {
       expiresIn: '7d',
     })
+    console.log(key)
+
     //-----------------------
     let message = await transporter.sendMail({
       from: 'leland.wolf90@ethereal.email',
@@ -43,7 +48,10 @@ const validateEmail = async (req, res) => {
     const key = req.query.key
     console.log('KEY LINK', key)
     jwt.verify(key, process.env.EMAIL_TOKEN, async (err, user) => {
-      if (err) return res.sendStatus(403)
+      if (err)
+        return res
+          .status(403)
+          .json(resToSend('failed', 'votre lien est érroné ou éxpirés'))
       await User.update(
         { valide: true },
         { where: { id: user.id, email: user.email, password: user.password } }

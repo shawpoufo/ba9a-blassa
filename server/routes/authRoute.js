@@ -12,7 +12,7 @@ router.post(
   validateSignUp,
   auth_controller.sign_up
 )
-router.post('/signIn', auth_controller.login)
+router.post('/login', auth_controller.login)
 router.post('/validateemail', validateEmail)
 router.delete(
   '/logout',
