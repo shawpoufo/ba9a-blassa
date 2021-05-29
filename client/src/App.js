@@ -5,15 +5,10 @@ import TripsSerction from './components/TripSection'
 import AdminSection from './components/admin/AdminSection'
 import Header from './components/Header'
 import SignUpSection from './components/signUp/signUpSection'
-import useAuthStore from './stores/authStore'
 import LoginSection from './components/signUp/loginSection'
 import EmailValidationSection from './components/signUp/emailValidationSection'
+import LogoutSection from './components/signUp/logoutSection'
 function App() {
-  const getToken = useAuthStore((state) => state.getToken)
-  useEffect(() => {
-    getToken()
-    console.log(useAuthStore.getState().token)
-  }, [])
   return (
     <div className="App">
       <BrowserRouter>
@@ -22,6 +17,8 @@ function App() {
           <Route path="/" exact component={Home} />
           <Route path="/signup" exact component={SignUpSection} />
           <Route path="/login" exact component={LoginSection} />
+          <Route path="/logout" exact component={LogoutSection} />
+
           <Route
             path="/validateemail"
             exact

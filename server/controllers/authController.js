@@ -34,32 +34,36 @@ exports.sign_up = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body
-    const user = await User.findOne({ where: { email } })
-    if (user == null) {
-      return res
-        .status(400)
-        .send()
-        .json(resToSend('failed', 'utilisateur introuvable'))
+    const user = await User.findOne({
+      where: { email },
+    })
+    const logRes = { status: 400, message: 'email ou password incorrecte' }
+    if (!user) {
+      logRes.status = 400
+      logRes.message = 'email ou password incorrecte'
     }
 
-    if (!user.valide)
-      return res
-        .status(404)
-        .json(resToSend('failed', 'veuillez valider votre compte'))
+    if (password && user && (await bcrypt.compare(password, user.password))) {
+      if (user && user.valide === false) {
+        logRes.status = 400
+        logRes.message = 'veuillez confirmer votre compte'
+      }
 
-    if (await bcrypt.compare(password, user.password)) {
-      const accessToken = generateAccessToken(user)
-
-      //   const refreshToken = jwt.sign(
-      //     user.dataValues,
-      //     process.env.REFRESH_TOKEN_SECRET
-      //   )
-      res.json(resToSend('success', accessToken))
-    } else {
-      res.status(404).json(resToSend('failed', 'utilisteur introuvable'))
+      if (user && user.valide) {
+        const accessToken = generateAccessToken(user)
+        logRes.status = 200
+        logRes.message = accessToken
+      }
     }
+
+    res
+      .status(logRes.status)
+      .json(
+        resToSend(logRes.status === 200 ? 'success' : 'failed', logRes.message)
+      )
   } catch (error) {
-    res.status(500).json(res500Error())
+    console.log(error)
+    return res.status(500).json(error)
   }
 }
 

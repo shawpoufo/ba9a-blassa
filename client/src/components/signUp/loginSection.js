@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
+import { useHistory, useLocation } from 'react-router'
 import shallow from 'zustand/shallow'
 import useAuthStore from '../../stores/authStore'
 const LoginSection = () => {
@@ -8,10 +8,17 @@ const LoginSection = () => {
     password: '',
   })
   const location = useLocation()
-  const [login, errorMessage] = useAuthStore(
-    (state) => [state.login, state.errorMessage],
+  const history = useHistory()
+  const [login, errorMessage, token, loginErrors] = useAuthStore(
+    (state) => [
+      state.login,
+      state.errorMessage,
+      state.token,
+      state.loginErrors,
+    ],
     shallow
   )
+
   function changeUserState(e) {
     setUser((state) => ({ ...state, [e.target.name]: e.target.value }))
   }
@@ -19,8 +26,8 @@ const LoginSection = () => {
     login({ ...user })
   }
   useEffect(() => {
-    console.log(errorMessage)
-  }, [errorMessage])
+    if (token) history.push('/trips')
+  }, [token])
   return (
     <div>
       <h1>Login</h1>
@@ -36,9 +43,9 @@ const LoginSection = () => {
           name="email"
           onChange={changeUserState}
         />
-        {/* <div>
-          {signUpErrors.filter((error) => error.param === 'email')[0]?.msg}
-        </div> */}
+        <div>
+          {loginErrors.filter((error) => error.param === 'email')[0]?.msg}
+        </div>
       </div>
       <div>
         <label>Mot de passe</label>
@@ -48,9 +55,9 @@ const LoginSection = () => {
           name="password"
           onChange={changeUserState}
         />
-        {/* <div>
-          {signUpErrors.filter((error) => error.param === 'password')[0]?.msg}
-        </div> */}
+        <div>
+          {loginErrors.filter((error) => error.param === 'password')[0]?.msg}
+        </div>
       </div>
       <button onClick={send}>se connecter</button>
       <div>{errorMessage}</div>
