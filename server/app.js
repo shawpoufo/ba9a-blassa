@@ -16,7 +16,7 @@ app.use(express.json())
 app.use('/auth', auth_router)
 app.use('/admin', stationRoute)
 app.use('/admin', companyRoute)
-app.use('/admin', tripRoute)
+app.use(tripRoute)
 app.use('/admin', stopOverRoute)
 app.use(bookingRoute)
 

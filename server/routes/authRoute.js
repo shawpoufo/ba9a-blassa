@@ -7,6 +7,9 @@ const {
   validateSignUp,
   signUpValidations,
 } = require('../Helper/signUpValidation')
+const authenticateToken =
+  require('../controllers/authController').authenticateToken
+const { roleVerification, checkRole } = require('../Helper/roleVerification')
 router.post(
   '/signUp',
   signUpValidations,
@@ -15,9 +18,5 @@ router.post(
 )
 router.post('/login', loginValidations, validateLogin, auth_controller.login)
 router.post('/validateemail', validateEmail)
-router.delete(
-  '/logout',
-  auth_controller.authenticateToken,
-  auth_controller.logout
-)
+router.post('/checkrole', authenticateToken, checkRole)
 module.exports = router

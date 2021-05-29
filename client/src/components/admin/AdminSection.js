@@ -5,15 +5,25 @@ import {
   Route,
   useParams,
   useLocation,
+  useHistory,
 } from 'react-router-dom'
 import AdminHome from './AdminHome'
 import CompanySection from './companySection/CompanySection'
 import TripSection from './tripSection/TripSection'
 import NavSection from './NavSection'
+import useAuthStore from '../../stores/authStore'
 const AdminSection = () => {
   const { section } = useParams()
   const [sectionComponent, setSectionComponent] = useState(() => <AdminHome />)
-
+  const checkRole = useAuthStore((state) => state.checkRole)
+  const history = useHistory()
+  useEffect(async () => {
+    // checkRole('admin').then((response) => console.log(response))
+    const check = await checkRole('admin')
+    if (!check) {
+      history.push('/login', { from: 'admin', value: false })
+    }
+  }, [])
   useEffect(() => {
     switch (section) {
       case 'company':

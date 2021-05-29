@@ -10,7 +10,6 @@ const StationPart = ({ cmpName, station, setStation, stationsByCities }) => {
         if (station.city === res.city.name) extractedStations.push(eStation)
       }
     }
-    console.log('ex : ', extractedStations, 'sbc :', stationsByCities)
     setStations(extractedStations)
   }
 
@@ -21,7 +20,6 @@ const StationPart = ({ cmpName, station, setStation, stationsByCities }) => {
             (s) => s.name.toLowerCase() === e.target.value.toLowerCase()
           )
         : null
-    console.log(searchedStation?.id)
     setStation((s) => {
       return {
         ...s,
@@ -38,7 +36,6 @@ const StationPart = ({ cmpName, station, setStation, stationsByCities }) => {
   }, [station.city])
   return (
     <div>
-      {console.log(stations.length)}
       <label>
         {cmpName === 'startStation' ? 'ville de départ' : "ville d'arrivée"}{' '}
       </label>

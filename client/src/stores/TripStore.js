@@ -1,6 +1,7 @@
 import create from 'zustand'
 import axios from 'axios'
 import moment from 'moment'
+import useAuthStore from './authStore'
 const useTripStore = create((set, get) => ({
   trips: [],
   count: 0,
@@ -79,13 +80,19 @@ const useTripStore = create((set, get) => ({
       stopDate: moment(`${stopOver.stopDate} ${stopOver.stopTime}`).add(1, 'h'),
     }))
     axios
-      .post('http://localhost:3000/admin/fulltrip', {
-        ...reqCompany,
-        ...reqStartStation,
-        ...reqEndStation,
-        ...reqTripData,
-        stopOvers: modifiedStopOvers,
-      })
+      .post(
+        'http://localhost:3000/admin/fulltrip',
+        {
+          ...reqCompany,
+          ...reqStartStation,
+          ...reqEndStation,
+          ...reqTripData,
+          stopOvers: modifiedStopOvers,
+        },
+        {
+          headers: { Authorization: `Bearer ${useAuthStore.getState().token}` },
+        }
+      )
       .then((response) => {
         const fullTrip = response.data.payload
         set((state) => {

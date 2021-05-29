@@ -1,10 +1,10 @@
 import create from 'zustand'
 import axios from 'axios'
-const AuthStore = create((set, get) => ({
+const useAuthStore = create((set, get) => ({
   token: '',
   signUpErrors: [],
   loginErrors: [],
-  successMessage: '',
+  successMessage: false,
   errorMessage: '',
   signUp: (user) => {
     axios
@@ -18,12 +18,11 @@ const AuthStore = create((set, get) => ({
       .catch((error) => {
         if (error.response.status !== 500) {
           const signUpMessages = error.response.data.payload
-          set({ signUpErrors: signUpMessages, successMessage: true })
+          set({ signUpErrors: signUpMessages, successMessage: false })
         }
       })
   },
   login: ({ email, password }) => {
-    console.log(`email : ${email}  password : ${password}`)
     axios
       .post('http://localhost:3000/auth/login', { email, password })
       .then((response) => {
@@ -32,12 +31,12 @@ const AuthStore = create((set, get) => ({
         set({ successMessage: true, errorMessage: '', token: token })
       })
       .catch((error) => {
-        console.log(error)
         if (error.response.status !== 500) {
           const message = error.response.data.payload
+          console.log(message)
           const err = Array.isArray(message)
             ? { errorMessage: '', loginErrors: message }
-            : { errorMessage: message, loginErrors: '' }
+            : { errorMessage: message, loginErrors: [] }
           set({ ...err, successMessage: false })
         }
       })
@@ -58,5 +57,22 @@ const AuthStore = create((set, get) => ({
   getToken: () => {
     set({ token: localStorage.getItem('token') })
   },
+  checkRole: async (role) => {
+    try {
+      const data = await axios.post(
+        `http://localhost:3000/auth/checkrole`,
+        { role },
+        {
+          headers: { Authorization: `Bearer ${get().token}` },
+        }
+      )
+
+      return data.data.payload
+    } catch (error) {
+      if (error.response.status !== 500) {
+        return false
+      }
+    }
+  },
 }))
-export default AuthStore
+export default useAuthStore

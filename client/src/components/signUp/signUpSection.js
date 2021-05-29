@@ -22,7 +22,10 @@ const SignUpSection = () => {
     signUp({ ...user })
   }
   useEffect(() => {
-    if (successMessage) history.push('/login', true)
+    if (successMessage) {
+      useAuthStore.setState({ signUpErrors: [] })
+      history.push('/login', { from: 'signup', value: true })
+    }
   }, [successMessage])
 
   return (

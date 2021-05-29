@@ -26,14 +26,19 @@ const LoginSection = () => {
     login({ ...user })
   }
   useEffect(() => {
-    if (token) history.push('/trips')
+    if (token) {
+      useAuthStore.setState({ loginErrors: [], errorMessage: '' })
+      history.push('/trips')
+    }
   }, [token])
   return (
     <div>
       <h1>Login</h1>
-
-      {location.state ? (
+      {location.state?.from == 'signup' && location.state.value ? (
         <h2>un email de vérification a été envoyer dans votre boite </h2>
+      ) : null}
+      {location.state?.from == 'admin' && location.state.value ? (
+        <h2>veuillez vous identifier </h2>
       ) : null}
       <div>
         <label>email</label>

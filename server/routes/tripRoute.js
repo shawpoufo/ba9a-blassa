@@ -6,9 +6,19 @@ const {
   validateTripParams2,
   validateTrip,
 } = require('../Helper/tripValidation')
-router.post('/trip', validateTrip, tripController.create)
+const authenticateToken =
+  require('../controllers/authController').authenticateToken
+const { roleVerification } = require('../Helper/roleVerification')
+// router.post('/admin/trip',authenticateToken, validateTrip, tripController.create)
+// router.delete('/trip', tripController.remove)
 router.get('/trip', validateTripParams, tripController.render)
-router.delete('/trip', tripController.remove)
-router.post('/fulltrip', validateTripParams2, tripController.addFullTrip)
+
+router.post(
+  '/admin/fulltrip',
+  authenticateToken,
+  roleVerification('admin'),
+  validateTripParams2,
+  tripController.addFullTrip
+)
 
 module.exports = router
