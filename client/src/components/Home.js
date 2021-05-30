@@ -5,6 +5,7 @@ import useStationStore from '../stores/StationStore'
 import shallow from 'zustand/shallow'
 import useTripStore from '../stores/TripStore'
 import moment from 'moment-timezone'
+
 const Home = () => {
   const history = useHistory()
   const [fetchStationsByCities, clearSBC] = useStationStore(

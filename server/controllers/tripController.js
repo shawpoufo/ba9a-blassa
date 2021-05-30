@@ -148,9 +148,27 @@ exports.render = async (req, res) => {
       const stopOvers = await t.getStopOvers()
       const bookings = await t.getBookings()
 
+      const fullStopOvers = []
+      for (let s of stopOvers) {
+        //ss : station details of stopOver ,
+        const ss = await Station.findOne({
+          attributes: ['name', 'city'],
+          where: { id: s.station },
+        })
+        fullStopOvers.push({
+          id: s.id,
+          city: ss.city,
+          name: ss.name,
+          stopDate: s.stopDate,
+        })
+      }
+      const sortedStopOvers = fullStopOvers
+        .slice()
+        .sort((a, b) => a.stopDate - b.stopDate)
+
       newTrips.push({
         ...t.dataValues,
-        StopOvers: stopOvers,
+        StopOvers: sortedStopOvers,
         Bookings: bookings,
       })
     }

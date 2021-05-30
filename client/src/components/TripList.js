@@ -1,34 +1,108 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import useTripStore from '../stores/TripStore'
 import shallow from 'zustand/shallow'
-
+import 'bootstrap/dist/css/bootstrap.min.css'
+import bootstrap from 'bootstrap'
+import BookingSection from './bookingSection'
+import TripInfo from './tripInfo'
+import StopOverList from './stopOverList'
+import TripCard from './tripCard'
+import Mmodal from './btest'
 const TripList = () => {
   const [trips, errorMessage, count] = useTripStore(
     (state) => [state.trips, state.errorMessage, state.count],
     shallow
   )
+  const [tripToShow, setTripToShow] = useState({
+    id: -1,
+    check: true,
+  })
+  const [selectedTrip, setSelectedTrip] = useState({})
 
+  function chooseTrip(e) {
+    const trip = trips.find(
+      (trip) => (trip.id = e.target.getAttribute('data-trip-id'))
+    )
+    setSelectedTrip(trip)
+  }
   return !errorMessage ? (
-    <div>
+    <div className="container">
       <h2>nombre de voyages trouvée : {count}</h2>
       <h3>
         {trips.length} voyages sur {count} affiché
       </h3>
-      {trips.map((trip) => {
-        return (
-          <ul key={trip.id}>
-            <li>{trip.Start.city}</li>
-            <li>{trip.End.city}</li>
-            <li>{trip.price}</li>
-            <li>{trip.startDate}</li>
-            <li>{trip.price}</li>
-            <li>{trip.Company.name}</li>
-          </ul>
-        )
-      })}
+      <div className="row row-cols-1 row-cols-sm-2">
+        {trips.map((trip) => {
+          return (
+            <div className="col" key={trip.id}>
+              <div className="card">
+                <div className="card-header bg-transparent text-start ">
+                  <span className="badge bg-dark text-light">{trip.id}</span>
+                </div>
+                {/* BODY */}
+                <TripCard trip={trip} tripToShow={tripToShow} />
+                {/* FOOTER */}
+                <div className="card-footer container">
+                  <div className="row justify-content-evenly">
+                    <div className="col">
+                      <ToggleTripButton
+                        trip={trip}
+                        setTripToShow={setTripToShow}
+                      />
+                    </div>
+                    <div className="col text-end">
+                      {/* <button className="btn btn-primary" data-trip={trip.id}>
+                        Réserver
+                      </button> */}
+                      {/* <BookingSection trip={trip} />
+                       */}
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-trip-id={trip.id}
+                        data-bs-target="#exampleModal"
+                        onClick={chooseTrip}>
+                        Réserver
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+
+        <Mmodal trip={selectedTrip} />
+      </div>
     </div>
   ) : (
-    <div>{errorMessage}</div>
+    <div></div>
   )
 }
+
+const ToggleTripButton = ({ trip, setTripToShow }) => {
+  const [text, setText] = useState('Escale')
+  const [toggle, setToggle] = useState(true)
+  function changeText() {
+    toggle ? setText('Escales') : setText('Voyage')
+  }
+  useEffect(() => changeText(), [toggle])
+  return (
+    <button
+      className="btn btn-primary"
+      type="button"
+      data-trip={trip.id}
+      onClick={(e) => {
+        setTripToShow((state) => ({
+          id: e.target.getAttribute('data-trip'),
+          check: !state.check,
+        }))
+        setToggle((state) => !state)
+      }}>
+      {text}
+    </button>
+  )
+}
+
 export default TripList

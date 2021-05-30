@@ -18,6 +18,7 @@ const SelectStation = ({ name }) => {
 
   return (
     <select
+      className="form-select"
       name={name}
       value={selectedValue}
       onChange={(e) => {

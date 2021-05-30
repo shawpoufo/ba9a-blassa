@@ -90,60 +90,106 @@ const TripSearch = () => {
   }, [])
 
   return (
-    <div>
-      <label>ville / station départ</label>
-      <SelectStation name="startStation" />
-      <label>ville / station d'arrivée</label>
-      <SelectStation name="endStation" />
-      <label>date de départ</label>
-      <input
-        type="date"
-        name="startDate"
-        value={startDate}
-        onChange={regenerateSearchObject}></input>
-      <label>date d'arrivée</label>
-      <input
-        type="date"
-        name="endDate"
-        value={endDate}
-        onChange={regenerateSearchObject}></input>
-      <select
-        name="companies"
-        value={companies}
-        onChange={regenerateSearchObject}>
-        {companiesF.map((cmp) => (
-          <option key={cmp.id} value={cmp.id}>
-            {cmp.name}
-          </option>
-        ))}
-      </select>
-      <label>Prix minimum</label>
-      <input
-        type="range"
-        name="lowerPrice"
-        min={0}
-        max={1000}
-        step={1}
-        value={lowerPrice}
-        onChange={regenerateSearchObject}
-      />
-      <label>Prix maximum</label>
-      <input
-        type="range"
-        name="higherPrice"
-        min={0}
-        max={1000}
-        step={1}
-        value={higherPrice}
-        onChange={regenerateSearchObject}
-      />
+    <div className="container bg-dark overflow-hidden rounded-3 shadow-lg">
+      <div className="row mx-3 my-3">
+        <div className="col">
+          <div className="row row-cols-1 gy-3">
+            <div className="col list-group">
+              <label className="text-white form-label">
+                ville / station départ
+              </label>
+              <SelectStation name="startStation" />
+            </div>
+            <div className="col list-group">
+              <label className="text-white form-label">date de départ</label>
+              <input
+                className="form-control"
+                type="date"
+                name="startDate"
+                value={startDate}
+                onChange={regenerateSearchObject}></input>
+            </div>
 
-      <button
-        onClick={() => {
-          search()
-        }}>
-        Recherche
-      </button>
+            <div className="col list-group">
+              <label className="text-white form-label">
+                Prix minimum : {lowerPrice}
+              </label>
+              <input
+                className="form-range"
+                type="range"
+                name="lowerPrice"
+                min={0}
+                max={1000}
+                step={1}
+                value={lowerPrice}
+                onChange={regenerateSearchObject}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="col ms-3">
+          <div className="row row-cols-1 gy-3">
+            <div className="col list-group">
+              <label className="text-white form-label">
+                ville / station d'arrivée
+              </label>
+              <SelectStation name="endStation" />
+            </div>
+            <div className="col list-group">
+              <label className="text-white form-label">date d'arrivée</label>
+              <input
+                className="form-control"
+                type="date"
+                name="endDate"
+                value={endDate}
+                onChange={regenerateSearchObject}></input>
+            </div>
+
+            <div className="col list-group">
+              <label className="text-white form-label">
+                Prix maximum : {higherPrice}
+              </label>
+              <input
+                className="form-range"
+                type="range"
+                name="higherPrice"
+                min={0}
+                max={1000}
+                step={1}
+                value={higherPrice}
+                onChange={regenerateSearchObject}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row">
+        <select
+          className="form-select"
+          name="companies"
+          value={companies}
+          onChange={regenerateSearchObject}>
+          <option value="-1">Choisissez un société</option>
+          {companiesF.map((cmp) => (
+            <option key={cmp.id} value={cmp.id}>
+              {cmp.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="row justify-content-center">
+        <div className="col-auto ">
+          <button
+            className="btn btn-primary my-3"
+            onClick={() => {
+              search()
+            }}>
+            Recherche
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

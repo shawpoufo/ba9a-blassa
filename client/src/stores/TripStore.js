@@ -37,7 +37,7 @@ const useTripStore = create((set, get) => ({
   fetchTrips: (params) => {
     if (!params) params = get().searchQuery
     axios
-      .get(`http://localhost:3000/admin/trip${params}`)
+      .get(`http://localhost:3000/trip${params}`)
       .then((response) => {
         const { rows, offset, count } = response.data.payload
         rows.sort((first, second) => first.startDate - second.startDate)
