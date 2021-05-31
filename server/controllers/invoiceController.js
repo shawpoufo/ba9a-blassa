@@ -9,9 +9,16 @@ exports.render = async (req, res) => {
       const bookings = await i.getBookings()
       const tripId = bookings[0].dataValues.tripId
       const trip = await Trip.findByPk(tripId)
+      const company = await trip.getCompany()
       const start = await trip.getStart()
       const end = await trip.getEnd()
-      newInvoices.push({ ...i.dataValues, bookings: bookings, end, start })
+      newInvoices.push({
+        ...i.dataValues,
+        bookings: bookings,
+        end,
+        start,
+        company,
+      })
     }
 
     res.status(200).json(resToSend('success', newInvoices))

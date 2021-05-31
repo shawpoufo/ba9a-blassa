@@ -29,7 +29,6 @@ const Home = () => {
   }, [])
   return (
     <div>
-      <h1>Achetez vos tickets d'autocar au meilleur prix!</h1>
       <label>ville / station départ</label>
       <SelectStation name="startStation" />
       <label>ville / station d'arrivée</label>

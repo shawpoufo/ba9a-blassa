@@ -26,6 +26,16 @@ const TripsSerction = () => {
   }, [])
   return (
     <div>
+      <h1 className="text-center">
+        Achetez vos tickets d'autocar au meilleur prix!
+      </h1>
+      <h5 className="h5 text-center">
+        chez{' '}
+        <span className="badge rounded-pill bg-info text-dark me-3">
+          BA9ABLASSA
+        </span>
+        🚏🚌 🚌
+      </h5>
       <TripSearch />
       <TripList />
       <TripPagination />

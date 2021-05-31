@@ -50,7 +50,9 @@ const TripList = () => {
                   <span className="badge bg-dark text-light">{trip.id}</span>
                 </div>
                 {/* BODY */}
-                <TripCard trip={trip} tripToShow={tripToShow} />
+                {trip.hasOwnProperty('Company') ? (
+                  <TripCard trip={trip} tripToShow={tripToShow} />
+                ) : null}
                 {/* FOOTER */}
                 <div className="card-footer container">
                   <div className="row justify-content-evenly">

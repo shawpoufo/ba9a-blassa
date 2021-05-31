@@ -8,6 +8,7 @@ import SignUpSection from './components/signUp/signUpSection'
 import LoginSection from './components/signUp/loginSection'
 import EmailValidationSection from './components/signUp/emailValidationSection'
 import LogoutSection from './components/signUp/logoutSection'
+import InvoiceSection from './components/user/invoiceSection'
 function App() {
   return (
     <div className="App">
@@ -18,7 +19,7 @@ function App() {
           <Route path="/signup" exact component={SignUpSection} />
           <Route path="/login" exact component={LoginSection} />
           <Route path="/logout" exact component={LogoutSection} />
-
+          <Route path="/invoice" exact component={InvoiceSection} />
           <Route
             path="/validateemail"
             exact
