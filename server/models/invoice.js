@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+'use strict'
+const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class invoice extends Model {
     /**
@@ -14,26 +12,29 @@ module.exports = (sequelize, DataTypes) => {
       invoice.belongsTo(models.User, { foreignKey: 'id' })
       invoice.hasMany(models.Booking, { foreignKey: 'invoiceId' })
     }
-  };
-  invoice.init({
-    date: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      validate: {
-        isDate: { msg: 'format de date incorrect' }
-      }
+  }
+  invoice.init(
+    {
+      date: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        validate: {
+          isDate: { msg: 'format de date incorrect' },
+        },
+      },
+      total: {
+        allowNull: false,
+        type: DataTypes.DECIMAL,
+        validate: {
+          isDecimal: { msg: 'format incorrecte' },
+        },
+      },
     },
-    total: {
-      allowNull: false,
-      type: DataTypes.DECIMAL,
-      validate: {
-        isDecimal: { msg: 'format incorrecte' }
-      }
+    {
+      sequelize,
+      tableName: 'invoice',
+      modelName: 'Invoice',
     }
-  }, {
-    sequelize,
-    tableName: 'Invoice',
-    modelName: 'Invoice',
-  });
-  return invoice;
-};
+  )
+  return invoice
+}

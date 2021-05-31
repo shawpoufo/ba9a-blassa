@@ -43,7 +43,7 @@ const BookingSection = ({ trip }) => {
                     isOptionDisabled={(option) => option.isdisabled}
                   />
                 </div>
-                <div className="col height:500px">Facturation</div>
+                <div className="col"></div>
               </div>
             </div>
             <div className="col-1"></div>

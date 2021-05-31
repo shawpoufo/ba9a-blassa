@@ -7,7 +7,7 @@ import BookingSection from './bookingSection'
 import TripInfo from './tripInfo'
 import StopOverList from './stopOverList'
 import TripCard from './tripCard'
-import Mmodal from './btest'
+import BookingModal from './bookingModal'
 const TripList = () => {
   const [trips, errorMessage, count] = useTripStore(
     (state) => [state.trips, state.errorMessage, state.count],
@@ -19,19 +19,29 @@ const TripList = () => {
   })
   const [selectedTrip, setSelectedTrip] = useState({})
 
+  useEffect(() => {
+    if (selectedTrip?.id && trips.length) {
+      setSelectedTrip((state) => trips.find((t) => t.id === selectedTrip.id))
+    }
+    if (!trips.length) {
+      setSelectedTrip({})
+    }
+  }, [trips])
+
   function chooseTrip(e) {
     const trip = trips.find(
-      (trip) => (trip.id = e.target.getAttribute('data-trip-id'))
+      (trip) => trip.id === parseInt(e.target.getAttribute('data-trip-id'))
     )
     setSelectedTrip(trip)
   }
+
   return !errorMessage ? (
-    <div className="container">
+    <div className="container mt-5">
       <h2>nombre de voyages trouvée : {count}</h2>
       <h3>
         {trips.length} voyages sur {count} affiché
       </h3>
-      <div className="row row-cols-1 row-cols-sm-2">
+      <div className="row row-cols-1 row-cols-md-2">
         {trips.map((trip) => {
           return (
             <div className="col" key={trip.id}>
@@ -73,7 +83,7 @@ const TripList = () => {
           )
         })}
 
-        <Mmodal trip={selectedTrip} />
+        <BookingModal trip={selectedTrip} />
       </div>
     </div>
   ) : (

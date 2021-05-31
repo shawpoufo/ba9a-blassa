@@ -45,14 +45,24 @@ const TripPagination = () => {
     }
   }
   return (
-    <div>
-      <h3>offset : {offset || offset === 0 ? offset : 'no offset'}</h3>
-      <h3>number of pages : {Math.ceil(count / 5)}</h3>
-      <h4>page : {pageNumber}</h4>
-      <button name="back" value="back" onClick={browse}>
+    <div className="container">
+      {/* <h3>offset : {offset || offset === 0 ? offset : 'no offset'}</h3> */}
+      <div className="row">
+        <h5>nombre de pages : {Math.ceil(count / 5)}</h5>
+        <h6>page : {pageNumber}</h6>
+      </div>
+      <button
+        className="btn btn-dark me-5"
+        name="back"
+        value="back"
+        onClick={browse}>
         back
       </button>
-      <button name="next" value="next" onClick={browse}>
+      <button
+        className="btn btn-dark ms-1"
+        name="next"
+        value="next"
+        onClick={browse}>
         next
       </button>
     </div>
