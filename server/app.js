@@ -8,6 +8,7 @@ const stationRoute = require('./routes/stationRoute')
 const tripRoute = require('./routes/tripRoute')
 const stopOverRoute = require('./routes/stopOverRoute')
 const bookingRoute = require('./routes/bookingRoute')
+const invoiceRouter = require('./routes/invoiceRoute')
 const authenticateToken =
   require('./controllers/authController').authenticateToken
 app.use(cors())
@@ -19,5 +20,6 @@ app.use('/admin', companyRoute)
 app.use(tripRoute)
 app.use('/admin', stopOverRoute)
 app.use(bookingRoute)
+app.use(invoiceRouter)
 
 app.listen(3000, () => console.log('server start'))
