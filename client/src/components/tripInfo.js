@@ -11,6 +11,7 @@ const TripInfo = ({ trip }) => {
         <div className="col-12 col-sm-4">{trip.Company.name}</div>
         {/* trip info */}
         <div className="col-5 col-sm-3 text-start">
+          <h5 className="row">Départ</h5>
           <div className="row ">{trip.Start.city}</div>
           <div className="row">{trip.Start.name}</div>
           <div className="row">
@@ -18,6 +19,7 @@ const TripInfo = ({ trip }) => {
           </div>
         </div>
         <div className="col-2 col-sm-2 text-start">
+          <div className="row-1 text-light"> {'.'}</div>
           <div className="row-1">
             <IoLocationOutline size="1.5em" />
           </div>
@@ -29,6 +31,7 @@ const TripInfo = ({ trip }) => {
           </div>
         </div>
         <div className="col-5 col-sm-3 text-end">
+          <h5 className="row">Arrivée</h5>
           <div className="row"> {trip.End.city}</div>
           <div className="row">{trip.End.name}</div>
           <div className="row">

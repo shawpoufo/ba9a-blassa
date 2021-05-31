@@ -35,8 +35,8 @@ const StationPart = ({ cmpName, station, setStation, stationsByCities }) => {
     getStation()
   }, [station.city])
   return (
-    <div>
-      <label>
+    <div className="row row-cols-1 my-3 row-cols-sm-4">
+      <label className="col col-sm-2">
         {cmpName === 'startStation' ? 'ville de départ' : "ville d'arrivée"}{' '}
       </label>
       <input
@@ -53,7 +53,7 @@ const StationPart = ({ cmpName, station, setStation, stationsByCities }) => {
           />
         ))}
       </datalist>
-      <label>
+      <label className="col col-sm-2">
         {cmpName === 'startStation'
           ? "Station de d'épart"
           : "Station d'arrivée"}

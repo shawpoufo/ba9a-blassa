@@ -29,7 +29,7 @@ const AdminSection = () => {
       case 'company':
         setSectionComponent(<CompanySection />)
         break
-      case 'voyage':
+      case 'trip':
         setSectionComponent(<TripSection />)
         break
       default:
@@ -40,8 +40,8 @@ const AdminSection = () => {
 
   return (
     <div>
-      <h1>Administration</h1>
-      <NavSection />
+      {/* <h1>Administration</h1> */}
+      {/* <NavSection /> */}
       <div>{sectionComponent}</div>
     </div>
   )

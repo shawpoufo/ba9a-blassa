@@ -26,14 +26,15 @@ const TripSection = () => {
   return (
     <div>
       <h1>Voyages Administration</h1>
-      <GenericNav
+      {/* <GenericNav
         actions={[
           { value: 'list', label: 'list des voyages' },
           { value: 'form', label: 'formulaire' },
         ]}
         section="voyage"
       />
-      {actionComponent}
+      {actionComponent} */}
+      <TripForm />
     </div>
   )
 }

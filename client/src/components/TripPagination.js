@@ -45,7 +45,7 @@ const TripPagination = () => {
     }
   }
   return (
-    <div className="container">
+    <div className="container mb-5">
       {/* <h3>offset : {offset || offset === 0 ? offset : 'no offset'}</h3> */}
       <div className="row">
         <h5>nombre de pages : {Math.ceil(count / 5)}</h5>

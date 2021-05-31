@@ -68,6 +68,9 @@ const TripForm = () => {
   useEffect(() => {
     fetchStationsByCities()
     fetchCompanies()
+    return () => {
+      useTripStore.setState({ successMessage: '', errorMessage: '' })
+    }
   }, [])
   //---------------Functions
   function addTrip() {
@@ -83,12 +86,13 @@ const TripForm = () => {
   }, [successMessage])
   //--------------
   return (
-    <div>
+    <div className="container mb-5 pb-3">
       <CompanyPart
         companies={companies}
         selectedCompany={company}
         setCompany={setCompany}
       />
+      <hr />
       <StationPart
         cmpName="startStation"
         station={startStation}
@@ -101,6 +105,8 @@ const TripForm = () => {
         setStation={setEndStation}
         stationsByCities={stationsByCities}
       />
+      <hr />
+
       <TripPart
         startDate={tripData.startDate}
         endDate={tripData.endDate}
@@ -110,13 +116,29 @@ const TripForm = () => {
         endTime={tripData.endTime}
         setTripData={setTripData}
       />
+      <hr />
+
       <StopOverPart
         selectedStopOvers={selectedStopOvers}
         setSelectedStopOvers={setSelectedStopOvers}
         stationsByCities={stationsByCities}
       />
-      <button onClick={addTrip}>Ajouter</button>
-      <div> {errorMessage ? errorMessage : successMessage}</div>
+      <div className="row">
+        <div className="col"></div>
+        <div className="col">
+          <button
+            className="text-align-center text-darker btn btn-outline-warning px-5 ms-5 mt-3"
+            onClick={addTrip}>
+            valider
+          </button>
+        </div>
+        <div className="col"></div>
+      </div>
+
+      <h4 className={`${errorMessage ? 'text-danger' : 'text-success'} row`}>
+        {' '}
+        {errorMessage ? errorMessage : successMessage}
+      </h4>
     </div>
   )
 }

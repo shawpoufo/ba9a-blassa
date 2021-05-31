@@ -120,14 +120,14 @@ const validateTripParams2 = (req, res, next) => {
   if (!message && !startStationName) {
     message = 'la station de départ est obligatoire'
   }
-  if (!message && !validator.isAlphanumeric(`${startStationName}`)) {
+  if ((!message && !validator.isAlphanumeric(`${startStationName}`), '')) {
     message = 'le format station de départ est incorrecte'
   }
 
   if (!message && !endStationName) {
     message = "la station d'arrivée est obligatoire"
   }
-  if (!message && !validator.isAlphanumeric(`${endStationName}`)) {
+  if ((!message && !validator.isAlphanumeric(`${endStationName}`), '')) {
     message = "le format station d'arrivée est incorrecte"
   }
   if (!message && endCityName === startCityName) {
@@ -157,7 +157,9 @@ const validateTripParams2 = (req, res, next) => {
   if (!message && !seatCount)
     message = 'le nombre de place doit être supérieur dee zero'
 
+  let i = 0
   if (!message && stopOvers.length) {
+    i = i + 1
     for (let stopOver of stopOvers) {
       if (!moment(stopOver.stopDate).isBetween(startDate, endDate)) {
         message = `la date d l\'escale : (${stopOver.city} | ${
@@ -170,6 +172,12 @@ const validateTripParams2 = (req, res, next) => {
           .add(-1, 'h')
           .format('YYYY-MM-DD HH:mm')}`
         break
+      }
+      if (validator.isEmpty(stopOver.name)) {
+        message = `l\'escale numéro ${i} doit avoire une station`
+      }
+      if (validator.isEmpty(stopOver.city)) {
+        message = `l\'escale numéro ${i} doit avoire une ville`
       }
       if (
         stopOver.name === startStationName &&

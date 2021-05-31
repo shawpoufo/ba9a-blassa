@@ -14,9 +14,9 @@ const TripPart = ({
     })
   }
   return (
-    <div>
-      <div>
-        <label>date de départ : </label>
+    <div className="row row-cols-2 row-cols-sm-4">
+      <label className="col">date de départ : </label>
+      <div className="col">
         <input
           type="date"
           value={startDate}
@@ -24,8 +24,8 @@ const TripPart = ({
           onChange={changeTripDataState}
         />
       </div>
-      <div>
-        <label>Heure de départ : </label>
+      <label className="col">Heure de départ : </label>
+      <div className="col">
         <input
           type="time"
           value={startTime}
@@ -33,8 +33,9 @@ const TripPart = ({
           onChange={changeTripDataState}
         />
       </div>
-      <div>
-        <label>date d'arrivée</label>
+      <label className="col">date d'arrivée</label>
+
+      <div className="col">
         <input
           type="date"
           value={endDate}
@@ -42,8 +43,9 @@ const TripPart = ({
           onChange={changeTripDataState}
         />
       </div>
-      <div>
-        <label>Heure d'arrivée : </label>
+      <label className="col">Heure d'arrivée : </label>
+
+      <div className="col">
         <input
           type="time"
           value={endTime}
@@ -51,17 +53,19 @@ const TripPart = ({
           onChange={changeTripDataState}
         />
       </div>
+      <label className="col">Prix :</label>
       <div>
-        <label>Prix :</label>
         <input
+          className="col"
           type="number"
           value={price}
           name="price"
           onChange={changeTripDataState}
         />
       </div>
-      <div>
-        <label>Nombre de place :</label>
+      <label className="col">Nombre de place :</label>
+
+      <div className="col">
         <input
           type="number"
           value={seatCount}

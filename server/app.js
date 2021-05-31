@@ -9,6 +9,7 @@ const tripRoute = require('./routes/tripRoute')
 const stopOverRoute = require('./routes/stopOverRoute')
 const bookingRoute = require('./routes/bookingRoute')
 const invoiceRouter = require('./routes/invoiceRoute')
+const userRouter = require('./routes/userRoute')
 const authenticateToken =
   require('./controllers/authController').authenticateToken
 app.use(cors())
@@ -21,5 +22,6 @@ app.use(tripRoute)
 app.use('/admin', stopOverRoute)
 app.use(bookingRoute)
 app.use(invoiceRouter)
+app.use(userRouter)
 
 app.listen(3000, () => console.log('server start'))

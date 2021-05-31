@@ -15,7 +15,7 @@ function App() {
       <BrowserRouter>
         <Route path="/" component={Header} />
         <Switch>
-          <Route path="/" exact component={Home} />
+          <Route path="/" exact component={TripsSerction} />
           <Route path="/signup" exact component={SignUpSection} />
           <Route path="/login" exact component={LoginSection} />
           <Route path="/logout" exact component={LogoutSection} />
@@ -25,7 +25,6 @@ function App() {
             exact
             component={EmailValidationSection}
           />
-          <Route path="/" exact component={Home} />
           <Route path="/trips" exact component={TripsSerction} />
           <Route path="/admin" exact component={AdminSection} />
           <Route path="/admin/:section" exact component={AdminSection} />

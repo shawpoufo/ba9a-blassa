@@ -9,10 +9,11 @@ const CompanyPart = ({ companies, selectedCompany, setCompany }) => {
   }
 
   return (
-    <div>
-      <div>
-        <label>Company </label>
+    <div className="row row-cols-2 justify-content-start">
+      <label className="col-1 col-form-label">Company </label>
+      <div className="col-3">
         <input
+          className="form-control form-control-sm"
           onInput={changeCompanyState}
           name="company"
           list="companies"

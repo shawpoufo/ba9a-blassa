@@ -17,14 +17,14 @@ const TripList = () => {
     id: -1,
     check: true,
   })
-  const [selectedTrip, setSelectedTrip] = useState({})
+  const [selectedTrip, setSelectedTrip] = useState(null)
 
   useEffect(() => {
-    if (selectedTrip?.id && trips.length) {
+    if (selectedTrip && trips.length) {
       setSelectedTrip((state) => trips.find((t) => t.id === selectedTrip.id))
     }
     if (!trips.length) {
-      setSelectedTrip({})
+      setSelectedTrip(null)
     }
   }, [trips])
 

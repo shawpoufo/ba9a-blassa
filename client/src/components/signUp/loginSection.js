@@ -32,40 +32,55 @@ const LoginSection = () => {
     }
   }, [token])
   return (
-    <div>
-      <h1>Login</h1>
-      {location.state?.from == 'signup' && location.state.value ? (
-        <h2>un email de vérification a été envoyer dans votre boite </h2>
-      ) : null}
-      {location.state?.from == 'admin' && location.state.value ? (
-        <h2>veuillez vous identifier </h2>
-      ) : null}
-      <div>
-        <label>email</label>
-        <input
-          type="email"
-          value={user.email}
-          name="email"
-          onChange={changeUserState}
-        />
-        <div>
-          {loginErrors.filter((error) => error.param === 'email')[0]?.msg}
+    <div className="container">
+      <div className="row">
+        <div className="col"></div>
+        <div className="col">
+          <h1>Login</h1>
+          {location.state?.from == 'signup' && location.state.value ? (
+            <h5 className="text-success">
+              un email de vérification a été envoyer dans votre boite{' '}
+            </h5>
+          ) : null}
+          {location.state?.from == 'admin' && location.state.value ? (
+            <h5 className="text-danger">veuillez vous identifier </h5>
+          ) : null}
+          <div>
+            <label className="me-5 form-label">email</label>
+            <input
+              className="ms-3 "
+              type="email"
+              value={user.email}
+              name="email"
+              onChange={changeUserState}
+            />
+            <div className="text-danger">
+              {loginErrors.filter((error) => error.param === 'email')[0]?.msg}
+            </div>
+          </div>
+          <div>
+            <label>Mot de passe</label>
+            <input
+              className="ms-2"
+              type="password"
+              value={user.password}
+              name="password"
+              onChange={changeUserState}
+            />
+            <div className="text-danger">
+              {
+                loginErrors.filter((error) => error.param === 'password')[0]
+                  ?.msg
+              }
+            </div>
+          </div>
+          <button className="btn btn-dark text-center mt-2" onClick={send}>
+            se connecter
+          </button>
+          <div>{errorMessage}</div>
         </div>
+        <div className="col"></div>
       </div>
-      <div>
-        <label>Mot de passe</label>
-        <input
-          type="password"
-          value={user.password}
-          name="password"
-          onChange={changeUserState}
-        />
-        <div>
-          {loginErrors.filter((error) => error.param === 'password')[0]?.msg}
-        </div>
-      </div>
-      <button onClick={send}>se connecter</button>
-      <div>{errorMessage}</div>
     </div>
   )
 }

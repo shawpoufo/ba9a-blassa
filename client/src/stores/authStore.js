@@ -13,6 +13,7 @@ const useAuthStore = create((set, get) => ({
         set({
           successMessage: true,
           signUpErrors: [],
+          loginErrors: [],
         })
       })
       .catch((error) => {

@@ -4,6 +4,7 @@ import SvgSafetySeat from '../SafetySeat'
 import useBookingStore from '../stores/bookingStore'
 import PaymentSection from './paymentSection'
 import SeatList from './seatList'
+
 const BookingModal = ({ trip }) => {
   const [selectedSeats, setSelectedSeats] = useState([])
   const [step, setStep] = useState(0)
@@ -44,11 +45,38 @@ const BookingModal = ({ trip }) => {
       setMessage('')
     }
   }
+
+  function partToShow(trip) {
+    if (!trip) return <h5> ce voyage n'esxite plus</h5>
+    else if (step)
+      return <PaymentSection selectedSeats={selectedSeats} trip={trip} />
+    else {
+      return (
+        <SeatList
+          selectedSeats={selectedSeats}
+          tripId={trip.id}
+          seatCount={trip.seatCount}
+          Bookings={trip.Bookings}
+          setSelectedSeats={setSelectedSeats}
+        />
+      )
+    }
+  }
   useEffect(() => {
     if (step) {
       if (!success) setMessage('veuillez vous connectez! ')
     }
   }, [success])
+
+  useEffect(() => {
+    const myModalEl = document.getElementById('exampleModal')
+    myModalEl?.addEventListener('hidden.bs.modal', function (event) {
+      setStep(0)
+      setMessage('')
+      setSelectedSeats([])
+      useBookingStore.setState({ success: false })
+    })
+  }, [])
 
   return (
     <div>
@@ -62,7 +90,7 @@ const BookingModal = ({ trip }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Voyage : {trip.id}
+                {trip ? `Voyage : ${trip.id}` : "voyage n'est plus disponible"}
               </h5>
               <button
                 type="button"
@@ -70,19 +98,7 @@ const BookingModal = ({ trip }) => {
                 data-bs-dismiss="modal"
                 aria-label="Close"></button>
             </div>
-            <div className="modal-body">
-              {step ? (
-                <PaymentSection selectedSeats={selectedSeats} trip={trip} />
-              ) : (
-                <SeatList
-                  selectedSeats={selectedSeats}
-                  tripId={trip.id}
-                  seatCount={trip.seatCount}
-                  Bookings={trip.Bookings}
-                  setSelectedSeats={setSelectedSeats}
-                />
-              )}
-            </div>
+            <div className="modal-body">{partToShow(trip)}</div>
             <div className="modal-footer container">
               <div className="row">
                 <div className="col">

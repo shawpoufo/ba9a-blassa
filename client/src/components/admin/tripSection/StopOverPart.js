@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import shallow from 'zustand/shallow'
 import useStationStore from '../../../stores/StationStore'
 import moment from 'moment'
+import { MdCancel } from 'react-icons/md'
 //----private function
 
 //------component
@@ -62,61 +63,82 @@ const StopOverPart = ({
     }
     setStations(extractedStations)
   }
+  function removeFromStopOvers(e) {
+    const index = e.target.getAttribute('data-so')
+    const newArrSo = selectedStopOvers.filter((s, i) => i !== parseInt(index))
+    setSelectedStopOvers(newArrSo)
+  }
   useEffect(() => {
     getStation()
   }, [stopOver.city])
 
   return (
-    <div>
-      <div>
-        <label>ville :</label>
-        <input
-          value={stopOver.city}
-          onChange={changeStopOver}
-          name="city"
-          list="citylist"
-        />
-        <datalist id="citylist">
-          {stationsByCities.map((res) => (
-            <option key={res.city.name} value={res.city.name} />
-          ))}
-        </datalist>
-        <label>station :</label>
-        <input
-          value={stopOver.name}
-          onChange={changeStopOver}
-          name="name"
-          list="stationlist"
-          disabled={stopOver.city ? false : true}
-        />
-        <datalist id="stationlist">
-          {stations.map((station) => (
-            <option key={station.name} value={station.name} />
-          ))}
-        </datalist>
-        <label>Date de l'escale</label>
-        <input
-          type="date"
-          value={stopOver.stopDate}
-          onChange={changeStopOver}
-          name="stopDate"
-        />
+    <div className="row row-cols-1  row-cols-sm-2">
+      <div className="col">
+        <div className="row row-cols-2 g-2">
+          <label className="col">ville :</label>
+          <input
+            value={stopOver.city}
+            onChange={changeStopOver}
+            name="city"
+            list="citylist"
+          />
+          <datalist id="citylist">
+            {stationsByCities.map((res) => (
+              <option key={res.city.name} value={res.city.name} />
+            ))}
+          </datalist>
+          <label>station :</label>
+          <input
+            value={stopOver.name}
+            onChange={changeStopOver}
+            name="name"
+            list="stationlist"
+            disabled={stopOver.city ? false : true}
+          />
+          <datalist id="stationlist">
+            {stations.map((station) => (
+              <option key={station.name} value={station.name} />
+            ))}
+          </datalist>
+          <label>Date de l'escale</label>
+          <input
+            type="date"
+            value={stopOver.stopDate}
+            onChange={changeStopOver}
+            name="stopDate"
+          />
 
-        <label>heure de l'escale</label>
-        <input
-          type="time"
-          value={stopOver.stopTime}
-          onChange={changeStopOver}
-          name="stopTime"
-        />
-
-        <button onClick={addStopOver}>Ajouter</button>
+          <label>heure de l'escale</label>
+          <input
+            type="time"
+            value={stopOver.stopTime}
+            onChange={changeStopOver}
+            name="stopTime"
+          />
+        </div>
+        <button className="btn btn-dark" onClick={addStopOver}>
+          Ajouter
+        </button>
       </div>
-      <div>
+      <div className="col">
         {selectedStopOvers.map((sStopOver, index) => (
-          <div key={index}>
-            <label>{sStopOver.city}</label> ; <label>{sStopOver.name}</label> ;
-            <label>{sStopOver.stopDate}</label>
+          <div key={index} className="row">
+            <button
+              data-so={index}
+              type="button"
+              className="btn btn-outline-danger mt-2"
+              onClick={removeFromStopOvers}>
+              <MdCancel />
+              <span className="badge bg-secondary mx-1">{sStopOver.city}</span>
+              <span className="badge bg-secondary mx-1">{sStopOver.name}</span>
+              <span className="badge bg-secondary mx-1">
+                {sStopOver.stopDate}
+              </span>
+              <span className="badge bg-secondary mx-1">
+                {sStopOver.stopTime}
+              </span>
+            </button>
           </div>
         ))}
       </div>

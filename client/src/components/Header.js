@@ -3,19 +3,23 @@ import { Link } from 'react-router-dom'
 import shallow from 'zustand/shallow'
 import useAuthStore from '../stores/authStore'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import useUserStore from '../stores/userStore'
 const Header = () => {
   const [getToken, token, checkRole] = useAuthStore(
     (state) => [state.getToken, state.token, state.checkRole],
     shallow
   )
+  const fetchUser = useUserStore((state) => state.fetchUser)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [user, setUser] = useState({ firstName: '', lastName: '' })
   useEffect(() => {
     getToken()
   }, [])
 
   useEffect(async () => {
     const check = await checkRole('admin')
-    console.log(`is admin ${check}`)
+    const info = await fetchUser()
+    setUser(info)
     setIsAdmin(check)
   }, [token])
 
@@ -89,6 +93,15 @@ const Header = () => {
             )}
           </ul>
         </div>
+        {useAuthStore.getState().token ? (
+          <form className="d-flex text-info">
+            Bienvenue
+            <div className="text-dark ms-2">
+              {`  ${user?.firstName}  `}
+              {user?.lastName}
+            </div>
+          </form>
+        ) : null}
       </div>
     </nav>
   )
