@@ -28,6 +28,12 @@ const SignUpSection = () => {
     }
   }, [successMessage])
 
+  useEffect(() => {
+    return () => {
+      useAuthStore.setState({ signUpErrors: [], successMessage: false })
+    }
+  }, [])
+
   return (
     <div className="container">
       <h1>s'inscrire</h1>

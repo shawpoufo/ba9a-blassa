@@ -31,18 +31,23 @@ const LoginSection = () => {
       history.push('/trips')
     }
   }, [token])
+  useEffect(() => {
+    return () => {
+      useAuthStore.setState({ loginErrors: [], errorMessage: '' })
+    }
+  }, [])
   return (
     <div className="container">
       <div className="row">
         <div className="col"></div>
         <div className="col">
           <h1>Login</h1>
-          {location.state?.from == 'signup' && location.state.value ? (
+          {location.state?.from == 'signup' && location.state.value === true ? (
             <h5 className="text-success">
               un email de vérification a été envoyer dans votre boite{' '}
             </h5>
           ) : null}
-          {location.state?.from == 'admin' && location.state.value ? (
+          {location.state?.from == 'admin' && location.state.value === true ? (
             <h5 className="text-danger">veuillez vous identifier </h5>
           ) : null}
           <div>
@@ -77,7 +82,7 @@ const LoginSection = () => {
           <button className="btn btn-dark text-center mt-2" onClick={send}>
             se connecter
           </button>
-          <div>{errorMessage}</div>
+          <div className="text-danger">{errorMessage}</div>
         </div>
         <div className="col"></div>
       </div>

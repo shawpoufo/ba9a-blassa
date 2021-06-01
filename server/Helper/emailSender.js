@@ -7,11 +7,11 @@ const sendValidationEmail = async (client) => {
   try {
     let testAccount = await nodemailer.createTestAccount()
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
+      host: 'smtp.office365.com',
       port: 587,
       auth: {
-        user: 'kaitlyn97@ethereal.email',
-        pass: '33BepeCxV8D4WeSXcD',
+        user: '',
+        pass: '',
       },
     })
     // generer le lien de validation
@@ -25,7 +25,7 @@ const sendValidationEmail = async (client) => {
 
     //-----------------------
     let message = await transporter.sendMail({
-      from: 'leland.wolf90@ethereal.email',
+      from: 'azizi_hatim@emsi-edu.ma',
       to: client.email,
       subject: 'ba9aBlassa email de validation',
       html: `<div>

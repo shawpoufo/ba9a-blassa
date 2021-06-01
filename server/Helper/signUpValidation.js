@@ -1,6 +1,6 @@
 const { body, validationResult } = require('express-validator')
 const { resToSend } = require('./resToSend')
-
+const { User } = require('../models/index')
 const signUpValidations = [
   body('firstName')
     .notEmpty()
@@ -26,4 +26,28 @@ const validateSignUp = (req, res, next) => {
   else next()
 }
 
-module.exports = { validateSignUp, signUpValidations }
+const existingEmail = async (req, res, next) => {
+  try {
+    const email = req.body.email
+    console.log(`email : ${email}`)
+    const check = await User.findOne({ where: { email: email } })
+    console.log(`CHECK : ${check}`)
+    check
+      ? res
+          .status(400)
+          .json(
+            resToSend('failed', [
+              { param: 'email', msg: 'veuillez choisire un autre email' },
+            ])
+          )
+      : next()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+module.exports = {
+  validateSignUp,
+  signUpValidations,
+  existingEmail,
+}

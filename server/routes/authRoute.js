@@ -6,6 +6,7 @@ const { loginValidations, validateLogin } = require('../Helper/loginValidation')
 const {
   validateSignUp,
   signUpValidations,
+  existingEmail,
 } = require('../Helper/signUpValidation')
 const authenticateToken =
   require('../controllers/authController').authenticateToken
@@ -14,6 +15,7 @@ router.post(
   '/signUp',
   signUpValidations,
   validateSignUp,
+  existingEmail,
   auth_controller.sign_up
 )
 router.post('/login', loginValidations, validateLogin, auth_controller.login)
