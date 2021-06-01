@@ -10,8 +10,8 @@ const sendValidationEmail = async (client) => {
       host: 'smtp.office365.com',
       port: 587,
       auth: {
-        user: '',
-        pass: '',
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
       },
     })
     // generer le lien de validation
