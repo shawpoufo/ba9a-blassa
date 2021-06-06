@@ -12,12 +12,7 @@ router.put(
   validateCompany,
   companyController.update
 )
-router.get(
-  '/company/:id',
-  validateId('company id'),
-  companyExists,
-  companyController.render_one
-)
+router.get('/company/:id', companyExists, companyController.render_one)
 router.get(
   '/company/:id/trip',
   validateId('company id'),

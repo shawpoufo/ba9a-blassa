@@ -1,5 +1,5 @@
 const { resToSend, res500Error } = require('../Helper/resToSend')
-const { Company, Trip, sequelize } = require('../models/index')
+const { Station, Company, Trip, sequelize } = require('../models/index')
 
 exports.create = async (req, res) => {
   try {
@@ -42,10 +42,42 @@ exports.update = async (req, res) => {
 exports.render_one = async (req, res) => {
   try {
     const { id } = req.params
-    const options = req.originalUrl.includes('trip') ? { include: Trip } : {}
-    const company = await Company.findByPk(id, options)
-    res.json(resToSend('success', company ? company : undefined))
+    const company = await Company.findByPk(id, { include: Trip })
+    const newTrips = []
+    for (let t of company.Trips) {
+      const bookingsCount = await t.countBookings()
+      const StopOvers = await t.getStopOvers()
+
+      const fullStopOvers = []
+      for (let s of StopOvers) {
+        //ss : station details of stopOver ,
+        const ss = await Station.findOne({
+          attributes: ['name', 'city'],
+          where: { id: s.station },
+        })
+        fullStopOvers.push({
+          id: s.id,
+          city: ss.city,
+          name: ss.name,
+          stopDate: s.stopDate,
+        })
+      }
+
+      const Start = await t.getStart()
+      const End = await t.getEnd()
+      newTrips.push({
+        ...t.dataValues,
+        bookingsCount,
+        StopOvers: fullStopOvers,
+        End,
+        Start,
+        Company: company,
+      })
+    }
+    const newCompany = { ...company.dataValues, Trips: newTrips }
+    res.json(resToSend('success', newCompany ? newCompany : null))
   } catch (error) {
+    console.log(error)
     res.status(500).json(res500Error())
   }
 }

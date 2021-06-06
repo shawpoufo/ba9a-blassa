@@ -5,7 +5,7 @@ ba9ablassa (clone markoub) est une platforme de réservation de voyages en ligne
 ## Guide d'installation
 
 1. cloner le projet : `git clone https://github.com/shawpoufo/ba9a-blassa.git `
-2. positioner vous sur le fichier **ba9a-blassa** taper la commande `npm i` pour installer tous les paquets nécessaire
+2. positioner vous sur le fichier **ba9a-blassa** taper la commande `npm i` pour installer tous les paquets nécessaire du server puis postionner vous sur le dossier **client** taper la comande `npm i` pour installer les paquet nécessaire pour la partie front-end
 
 - ### Base de données
 

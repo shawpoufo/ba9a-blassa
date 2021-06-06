@@ -3,7 +3,7 @@ import create from 'zustand'
 
 const useCompanyStore = create((set, get) => ({
   companies: [],
-  selectedCompany: { id: 0, name: '' },
+  selectedCompany: null,
   errorMessage: '',
   successMessage: '',
   fetchCompanies: () => {
@@ -14,18 +14,22 @@ const useCompanyStore = create((set, get) => ({
   },
   fetchCompanyById: (id) => {
     axios
-      .get(`http://localhost:3000/admin/company/${get().selectedCompany.id}`)
+      .get(`http://localhost:3000/admin/company/${id}`)
       .then((response) => {
-        const payload = response.data.payload
+        const company = response.data.payload
         set({
-          selectedCompany: { id: payload.id, name: payload.name },
+          selectedCompany: company,
           errorMessage: '',
         })
       })
       .catch((error) => {
         if (error.response.data.status !== 500) {
           const message = error.response.data?.payload
-          set({ errorMessage: message, successMessage: '' })
+          set({
+            errorMessage: message,
+            successMessage: '',
+            selectedCompany: null,
+          })
         }
       })
   },

@@ -2,58 +2,46 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import shallow from 'zustand/shallow'
 import useCompanyStore from '../../../stores/CompanyStore'
+import StopOverListCMP from './StopOverListCMP'
+import TripInfo from '../../tripInfo'
 const CompanyList = () => {
-  const [companies, removeCompany, errorMessage, successMessage] =
+  const [selectedCompany, errorMessage, successMessage, fetchCompanyById] =
     useCompanyStore(
       (state) => [
-        state.companies,
-        state.removeCompany,
+        state.selectedCompany,
         state.errorMessage,
         state.successMessage,
+        state.fetchCompanyById,
       ],
       shallow
     )
-
-  function remove(e) {
-    if (window.confirm('veut tu supprimer la société ? ')) {
-      removeCompany(e.target.getAttribute('data-company'))
-    }
-  }
   useEffect(() => {
     useCompanyStore.setState({ errorMessage: '', successMessage: '' })
-  }, [])
+  }, [selectedCompany])
   return (
-    <div>
-      <h4>{errorMessage ? errorMessage : successMessage}</h4>
-
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>name</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {companies.map((company) => {
-            return (
-              <tr id={company.id} key={company.id}>
-                <td>{company.id}</td>
-                <td>{company.name}</td>
-                <td>
-                  <Link to={`/admin/company/form/${company.id}`}>update</Link>
-                </td>
-                <td>
-                  <button data-company={company.id} onClick={remove}>
-                    delete
-                  </button>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+    <div className="container">
+      {selectedCompany?.Trips.map((trip) => {
+        return (
+          <div key={trip.id} className="row row-cols-1 row-cols-sm-2">
+            <div className="card col">
+              <div className="card-header">Voyage : {trip.id}</div>
+              <TripInfo trip={trip} />
+              <div className="card-footer">
+                <label className="btn">
+                  Totale de gain :{' '}
+                  <span className="badge bg-dark">
+                    {trip.price * trip.bookingsCount} MAD
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div className="card col">
+              <div className="card-header">Escales</div>
+              <StopOverListCMP stopOvers={trip.StopOvers} />
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

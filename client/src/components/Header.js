@@ -75,11 +75,18 @@ const Header = () => {
                     className="dropdown-menu"
                     aria-labelledby="navbarDropdownMenuLink">
                     {isAdmin ? (
-                      <li>
-                        <Link to="/admin/trip/form" className="dropdown-item">
-                          voyage
-                        </Link>
-                      </li>
+                      [
+                        <li key={999999}>
+                          <Link to="/admin/trip/form" className="dropdown-item">
+                            voyage
+                          </Link>
+                        </li>,
+                        <li key={9999}>
+                          <Link to="/admin/company" className="dropdown-item">
+                            companies
+                          </Link>
+                        </li>,
+                      ]
                     ) : (
                       <li>
                         <Link to="/invoice" className="dropdown-item">

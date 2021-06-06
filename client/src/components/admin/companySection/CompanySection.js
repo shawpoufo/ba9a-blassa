@@ -7,25 +7,26 @@ import CompanyForm from './CompanyForm'
 import CompanyList from './CompanyList'
 
 const CompanySection = () => {
-  const [fetchCompanies, clearCompanies] = useCompanyStore(
-    (state) => [state.fetchCompanies, state.clearCompanies],
+  const [
+    companies,
+    fetchCompanies,
+    clearCompanies,
+    selectedCompany,
+    fetchCompanyById,
+  ] = useCompanyStore(
+    (state) => [
+      state.companies,
+      state.fetchCompanies,
+      state.clearCompanies,
+      state.selectedCompany,
+      state.fetchCompanyById,
+    ],
     shallow
   )
-  const { action } = useParams()
-  // const [action, setAction] = useState('')
-  const [actionComponent, setActionComponent] = useState(<CompanyList />)
-
-  function renderAction() {
-    switch (action) {
-      case 'form':
-        setActionComponent(<CompanyForm />)
-        break
-
-      default:
-        setActionComponent(<CompanyList />)
-
-        break
-    }
+  function showCompanyInfo(e) {
+    const id = parseInt(e.target.value)
+    console.log(id)
+    fetchCompanyById(id)
   }
   useEffect(() => {
     fetchCompanies()
@@ -33,21 +34,19 @@ const CompanySection = () => {
       clearCompanies()
     }
   }, [])
-
-  useEffect(() => {
-    renderAction()
-  }, [action])
   return (
-    <div>
-      <h1>Company Administration</h1>
-      <GenericNav
-        actions={[
-          { value: 'list', label: 'list de sociétés' },
-          { value: 'form', label: 'formulaire' },
-        ]}
-        section="company"
-      />
-      {actionComponent}
+    <div className="container">
+      <select onChange={showCompanyInfo}>
+        <option value={-1}>...</option>
+        {companies.map((c) => {
+          return (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          )
+        })}
+      </select>
+      {selectedCompany ? <CompanyList /> : null}
     </div>
   )
 }

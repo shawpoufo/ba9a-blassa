@@ -6,8 +6,7 @@ const companyExists = (req, res, next) => {
   if (!id) id = req.body.id
   Company.count({ where: { id } })
     .then((count) => {
-      if (count === 0)
-        return res.status(404).json(resToSend('failed', 'company introuvable'))
+      if (count === 0) return res.status(404).json(resToSend('failed', false))
       next()
     })
     .catch((error) => res.status(500).json(res500Error()))

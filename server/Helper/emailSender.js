@@ -25,7 +25,7 @@ const sendValidationEmail = async (client) => {
 
     //-----------------------
     let message = await transporter.sendMail({
-      from: 'azizi_hatim@emsi-edu.ma',
+      from: process.env.EMAIL,
       to: client.email,
       subject: 'ba9aBlassa email de validation',
       html: `<div>
